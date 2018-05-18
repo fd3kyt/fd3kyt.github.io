@@ -20,5 +20,14 @@
       <description>fd3kyt</description>
     </item>
     
+    <item>
+      <title>try_hugo</title>
+      <link>http://fd3kyt.github.io/posts/try_hugo/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://fd3kyt.github.io/posts/try_hugo/</guid>
+      <description> hello, org-mode in hugo    Name Desc     org-mode markdown-like   hugo Jekyll-like    </description>
+    </item>
+    
   </channel>
 </rss>
