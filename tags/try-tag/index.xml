@@ -1,52 +1,25 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-    <channel>
-        <title>
-            
-                    Try Tag on
-                
-            
-            fd3kyt&#39;s blog</title>
-        <link>https://fd3kyt.github.io/tags/try-tag/</link>
-        <description>Recent content  in Try Tag
-            on fd3kyt&#39;s blog</description>
-        <language>en-us</language>
-        <lastBuildDate>Sat, 19 May 2018 12:24:16 +0800</lastBuildDate>
-        <generator>Hugo -- gohugo.io</generator>
-        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
-            <atom:link href="https://fd3kyt.github.io/tags/try-tag/index.xml" rel="self" type="application/rss+xml" />
-            
-            <item>
-                <title>1</title>
-                <link>https://fd3kyt.github.io/posts/111/</link>
-                <description>&lt;p&gt;11111&lt;/p&gt;
-
-&lt;p&gt;changed&lt;/p&gt;
-</description>
-                
-                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
-                
-                     
-                        
-                             
-                            
-                                
-                                 
-                                    <category domain="https://fd3kyt.github.io/tags/try-tag">try-tag</category>
-                                 
-                                    <category domain="https://fd3kyt.github.io/tags/tag2">tag2</category>
-                                
-                            
-                        
-                     
-                        
-                    
-                
-                <guid>https://fd3kyt.github.io/posts/111/</guid>
-                <pubDate>Sat, 19 May 2018 11:14:00 +0800</pubDate>
-            </item>
-        
-    </channel>
+  <channel>
+    <title>Try Tag on fd3kyt&#39;s blog</title>
+    <link>https://fd3kyt.github.io/tags/try-tag/</link>
+    <description>Recent content in Try Tag on fd3kyt&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 19 May 2018 11:14:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://fd3kyt.github.io/tags/try-tag/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>1</title>
+      <link>https://fd3kyt.github.io/posts/111/</link>
+      <pubDate>Sat, 19 May 2018 11:14:00 +0800</pubDate>
+      
+      <guid>https://fd3kyt.github.io/posts/111/</guid>
+      <description>11111
+changed</description>
+    </item>
+    
+  </channel>
 </rss>
-
-
