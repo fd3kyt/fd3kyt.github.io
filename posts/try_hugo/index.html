@@ -35,8 +35,9 @@
 
 
 
+<meta property="article:published_time" content="2018-05-19T00:00:00&#43;08:00"/>
 
-
+<meta property="article:modified_time" content="2018-05-19T00:00:00&#43;08:00"/>
 
 
 
@@ -52,7 +53,8 @@
 <meta itemprop="description" content="hello, org-mode in hugo    Name Desc     org-mode markdown-like   hugo Jekyll-like    DONE  image   code cpp class Solution { public: int coinChange(vector&lt;int&gt;&amp; coins, int amount) { int res = INT_MAX; sort(coins.begin(), coins.end()); vector&lt;unordered_map&lt;int, int&gt;&gt; record(coins.size()); dfs(record, res, coins, amount, coins.size() - 1, 0); return res == INT_MAX? -1: res; } void dfs(vector&lt;unordered_map&lt;int, int&gt;&gt; &amp;record, int&amp; res, vector&lt;int&gt;&amp; coins, int target, int idx, int count) { // cout &lt;&lt; &#34;idx:&#34; &lt;&lt; idx &lt;&lt; &#34; target:&#34; &lt;&lt; target  // &lt;&lt; &#34; count&#34; &lt;&lt; count &lt;&lt; endl;  if (idx &lt; 0) return; if(record[idx].">
 
 
-
+<meta itemprop="datePublished" content="2018-05-19T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2018-05-19T00:00:00&#43;08:00" />
 <meta itemprop="wordCount" content="367">
 
 
@@ -71,7 +73,7 @@
   
 
   <header>
-    <div class="bg-black">
+    <div class="bg-blue">
       <nav class="pv3 ph3 ph4-ns" role="navigation">
   <div class="flex-l justify-between items-center center">
     <a href="https://fd3kyt.github.io/" class="f3 fw2 hover-white no-underline white-90 dib">
@@ -115,6 +117,13 @@
 
 
 
+  <a href="https://github.com/fd3kyt/" class="link-transition github link dib z-999 pt3 pt0-l mr2" title="Github link">
+    <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+  </a>
+
 
     </div>
   </div>
@@ -136,7 +145,7 @@
       </p>
       <h1 class="f1 athelas mb1">try_hugo</h1>
       
-      <time class="f6 mv4 dib tracked" datetime="0001-01-01T00:00:00Z">January 1, 0001</time>
+      <time class="f6 mv4 dib tracked" datetime="2018-05-19T00:00:00&#43;08:00">May 19, 2018</time>
     </header>
 
     <main class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l">
@@ -178,105 +187,105 @@
 <h2 id="code">code</h2>
 
 <h3 id="cpp">cpp</h3>
-<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
-<span class="k">public</span><span class="o">:</span>
-    <span class="kt">int</span> <span class="n">coinChange</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">coins</span><span class="p">,</span> <span class="kt">int</span> <span class="n">amount</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kt">int</span> <span class="n">res</span> <span class="o">=</span> <span class="n">INT_MAX</span><span class="p">;</span>
-        <span class="n">sort</span><span class="p">(</span><span class="n">coins</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">coins</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
-        <span class="n">vector</span><span class="o">&lt;</span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">record</span><span class="p">(</span><span class="n">coins</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
-        <span class="n">dfs</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">coins</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">coins</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-        <span class="k">return</span> <span class="n">res</span> <span class="o">==</span> <span class="n">INT_MAX</span><span class="o">?</span> <span class="o">-</span><span class="mi">1</span><span class="o">:</span> <span class="n">res</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="kt">void</span> <span class="n">dfs</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">record</span><span class="p">,</span> <span class="kt">int</span><span class="o">&amp;</span> <span class="n">res</span><span class="p">,</span>
-             <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">coins</span><span class="p">,</span> <span class="kt">int</span> <span class="n">target</span><span class="p">,</span> <span class="kt">int</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">int</span> <span class="n">count</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">// cout &lt;&lt; &#34;idx:&#34; &lt;&lt; idx &lt;&lt; &#34;  target:&#34; &lt;&lt; target
-</span><span class="c1"></span>        <span class="c1">//      &lt;&lt; &#34; count&#34; &lt;&lt; count &lt;&lt; endl;
-</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">idx</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
-        <span class="k">if</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="n">idx</span><span class="p">].</span><span class="n">count</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="n">and</span> <span class="n">record</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="n">target</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">count</span><span class="p">){</span>
-            <span class="c1">// cout &lt;&lt; &#34;cached&#34; &lt;&lt; endl;
-</span><span class="c1"></span>            <span class="k">return</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="c1">// if(record[idx].count(target) &gt; 0 and record[idx][target] &gt; count){
-</span><span class="c1"></span>        <span class="c1">//     cout &lt;&lt; &#34;cached, bigger: idx:&#34; &lt;&lt; idx
-</span><span class="c1"></span>        <span class="c1">//          &lt;&lt; &#34; target:&#34; &lt;&lt; target
-</span><span class="c1"></span>        <span class="c1">//          &lt;&lt; &#34; count:&#34; &lt;&lt; count
-</span><span class="c1"></span>        <span class="c1">//          &lt;&lt; &#34; cached count:&#34; &lt;&lt; record[idx][target] &lt;&lt; endl;
-</span><span class="c1"></span>        <span class="c1">// }
-</span><span class="c1"></span>        <span class="n">record</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="n">target</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span><span class="p">;</span>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#6ab825;font-weight:bold">class</span> <span style="color:#447fcf">Solution</span> {
+<span style="color:#6ab825;font-weight:bold">public</span>:
+    <span style="color:#6ab825;font-weight:bold">int</span> coinChange(vector&lt;<span style="color:#6ab825;font-weight:bold">int</span>&gt;&amp; coins, <span style="color:#6ab825;font-weight:bold">int</span> amount) {
+        <span style="color:#6ab825;font-weight:bold">int</span> res = INT_MAX;
+        sort(coins.begin(), coins.end());
+        vector&lt;unordered_map&lt;<span style="color:#6ab825;font-weight:bold">int</span>, <span style="color:#6ab825;font-weight:bold">int</span>&gt;&gt; record(coins.size());
+        dfs(record, res, coins, amount, coins.size() - <span style="color:#3677a9">1</span>, <span style="color:#3677a9">0</span>);
+        <span style="color:#6ab825;font-weight:bold">return</span> res == INT_MAX? -<span style="color:#3677a9">1</span>: res;
+    }
+    <span style="color:#6ab825;font-weight:bold">void</span> dfs(vector&lt;unordered_map&lt;<span style="color:#6ab825;font-weight:bold">int</span>, <span style="color:#6ab825;font-weight:bold">int</span>&gt;&gt; &amp;record, <span style="color:#6ab825;font-weight:bold">int</span>&amp; res,
+             vector&lt;<span style="color:#6ab825;font-weight:bold">int</span>&gt;&amp; coins, <span style="color:#6ab825;font-weight:bold">int</span> target, <span style="color:#6ab825;font-weight:bold">int</span> idx, <span style="color:#6ab825;font-weight:bold">int</span> count) {
+        <span style="color:#999;font-style:italic">// cout &lt;&lt; &#34;idx:&#34; &lt;&lt; idx &lt;&lt; &#34;  target:&#34; &lt;&lt; target
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">//      &lt;&lt; &#34; count&#34; &lt;&lt; count &lt;&lt; endl;
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#6ab825;font-weight:bold">if</span> (idx &lt; <span style="color:#3677a9">0</span>) <span style="color:#6ab825;font-weight:bold">return</span>;
+        <span style="color:#6ab825;font-weight:bold">if</span>(record[idx].count(target) &gt; <span style="color:#3677a9">0</span> and record[idx][target] &lt;= count){
+            <span style="color:#999;font-style:italic">// cout &lt;&lt; &#34;cached&#34; &lt;&lt; endl;
+</span><span style="color:#999;font-style:italic"></span>            <span style="color:#6ab825;font-weight:bold">return</span>;
+        }
+        <span style="color:#999;font-style:italic">// if(record[idx].count(target) &gt; 0 and record[idx][target] &gt; count){
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">//     cout &lt;&lt; &#34;cached, bigger: idx:&#34; &lt;&lt; idx
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">//          &lt;&lt; &#34; target:&#34; &lt;&lt; target
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">//          &lt;&lt; &#34; count:&#34; &lt;&lt; count
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">//          &lt;&lt; &#34; cached count:&#34; &lt;&lt; record[idx][target] &lt;&lt; endl;
+</span><span style="color:#999;font-style:italic"></span>        <span style="color:#999;font-style:italic">// }
+</span><span style="color:#999;font-style:italic"></span>        record[idx][target] = count;
 
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">target</span> <span class="o">%</span> <span class="n">coins</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">min</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">count</span> <span class="o">+</span> <span class="n">target</span> <span class="o">/</span> <span class="n">coins</span><span class="p">[</span><span class="n">idx</span><span class="p">]);</span>
-            <span class="c1">// record[idx][target] = count;  // this makes it wrong
-</span><span class="c1"></span>
-            <span class="k">return</span><span class="p">;</span>
-        <span class="p">}</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">target</span> <span class="o">/</span> <span class="n">coins</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">+</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">res</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span> <span class="c1">// pruing
-</span><span class="c1"></span>            <span class="n">dfs</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">coins</span><span class="p">,</span> <span class="n">target</span> <span class="o">-</span> <span class="n">i</span> <span class="o">*</span> <span class="n">coins</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">count</span> <span class="o">+</span> <span class="n">i</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">};</span>
+        <span style="color:#6ab825;font-weight:bold">if</span> (target % coins[idx] == <span style="color:#3677a9">0</span>) {
+            res = min(res, count + target / coins[idx]);
+            <span style="color:#999;font-style:italic">// record[idx][target] = count;  // this makes it wrong
+</span><span style="color:#999;font-style:italic"></span>
+            <span style="color:#6ab825;font-weight:bold">return</span>;
+        }
+        <span style="color:#6ab825;font-weight:bold">for</span> (<span style="color:#6ab825;font-weight:bold">int</span> i = target / coins[idx]; i &gt;= <span style="color:#3677a9">0</span>; i--) {
+            <span style="color:#6ab825;font-weight:bold">if</span> (count + i &gt;= res - <span style="color:#3677a9">1</span>) <span style="color:#6ab825;font-weight:bold">break</span>; <span style="color:#999;font-style:italic">// pruing
+</span><span style="color:#999;font-style:italic"></span>            dfs(record, res, coins, target - i * coins[idx], idx - <span style="color:#3677a9">1</span>, count + i);
+        }
+    }
+};
 </code></pre></div>
 <h3 id="python">python</h3>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">sys</span>
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6ab825;font-weight:bold">import</span> <span style="color:#447fcf">sys</span>
 
 
-<span class="k">class</span> <span class="nc">HostPathMap</span><span class="p">:</span>
-    <span class="n">customization</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">}</span>
+<span style="color:#6ab825;font-weight:bold">class</span> <span style="color:#447fcf">HostPathMap</span>:
+    customization = {
+    }
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="k">assert</span> <span class="n">key</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">customization</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="n">key</span><span class="p">,</span> <span class="p">[</span><span class="s2">&#34;192.168.1.{}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
-        <span class="p">)</span>
+    <span style="color:#6ab825;font-weight:bold">def</span> __getitem__(self, key):
+        <span style="color:#6ab825;font-weight:bold">assert</span> key.isdigit()
+        <span style="color:#6ab825;font-weight:bold">return</span> self.customization.get(
+            key, [<span style="color:#ed9d13">&#34;192.168.1.{}&#34;</span>.format(key)]
+        )
 
 
-<span class="n">name</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-<span class="n">host</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&#34;___&#34;</span><span class="p">)</span>
-<span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;__&#34;</span><span class="p">,</span> <span class="s2">&#34;/&#34;</span><span class="p">)</span>
-<span class="n">expanded_host</span><span class="p">,</span> <span class="n">working_dir</span> <span class="o">=</span> <span class="n">HostPathMap</span><span class="p">()[</span><span class="n">host</span><span class="p">]</span>
-<span class="n">path</span> <span class="o">=</span> <span class="n">working_dir</span> <span class="o">+</span> <span class="n">path</span>
-<span class="n">command</span> <span class="o">=</span> <span class="s2">&#34;&#34;&#34;ssh {host} </span><span class="se">\&#34;</span><span class="s2">mkdir -p $(dirname {path})</span><span class="se">\&#34;</span><span class="s2">;
-</span><span class="s2">scp ./{name} {host}:{path}&#34;&#34;&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">expanded_host</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span>
-<span class="p">)</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">command</span><span class="p">)</span></code></pre></div>
+name = sys.stdin.read().strip()
+host, path = name.split(<span style="color:#ed9d13">&#34;___&#34;</span>)
+path = path.replace(<span style="color:#ed9d13">&#34;__&#34;</span>, <span style="color:#ed9d13">&#34;/&#34;</span>)
+expanded_host, working_dir = HostPathMap()[host]
+path = working_dir + path
+command = <span style="color:#ed9d13">&#34;&#34;&#34;ssh {host} </span><span style="color:#ed9d13">\&#34;</span><span style="color:#ed9d13">mkdir -p $(dirname {path})</span><span style="color:#ed9d13">\&#34;</span><span style="color:#ed9d13">;
+</span><span style="color:#ed9d13">scp ./{name} {host}:{path}&#34;&#34;&#34;</span>.format(
+    name=name, host=expanded_host, path=path
+)
+sys.stdout.write(command)</code></pre></div>
 <h3 id="shell">shell</h3>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/usr/bin/env bash
-</span><span class="cp"></span>
-<span class="c1"># Usage: callgrind.sh ls -la
-</span><span class="c1"></span>
-<span class="nb">set</span> -e
+<div class="highlight"><pre style="color:#d0d0d0;background-color:#202020;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#cd2828;font-weight:bold">#!/usr/bin/env bash
+</span><span style="color:#cd2828;font-weight:bold"></span>
+<span style="color:#999;font-style:italic"># Usage: callgrind.sh ls -la
+</span><span style="color:#999;font-style:italic"></span>
+<span style="color:#24909d">set</span> -e
 
-<span class="nv">wait_before_valgrind</span><span class="o">=</span><span class="m">1</span>
+<span style="color:#40ffff">wait_before_valgrind</span>=<span style="color:#3677a9">1</span>
 
-<span class="nb">echo</span> <span class="s2">&#34;############################################################&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;  Will run:&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;  valgrind --tool=callgrind&#34;</span> <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;  in </span><span class="nv">$wait_before_valgrind</span><span class="s2"> second(s).&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;############################################################&#34;</span>
+<span style="color:#24909d">echo</span> <span style="color:#ed9d13">&#34;############################################################&#34;</span>
+<span style="color:#24909d">echo</span> <span style="color:#ed9d13">&#34;  Will run:&#34;</span>
+<span style="color:#24909d">echo</span> <span style="color:#ed9d13">&#34;  valgrind --tool=callgrind&#34;</span> <span style="color:#ed9d13">&#34;</span><span style="color:#40ffff">$@</span><span style="color:#ed9d13">&#34;</span>
+<span style="color:#24909d">echo</span> <span style="color:#ed9d13">&#34;  in </span><span style="color:#40ffff">$wait_before_valgrind</span><span style="color:#ed9d13"> second(s).&#34;</span>
+<span style="color:#24909d">echo</span> <span style="color:#ed9d13">&#34;############################################################&#34;</span>
 
-sleep <span class="nv">$wait_before_valgrind</span>
+sleep <span style="color:#40ffff">$wait_before_valgrind</span>
 
-<span class="c1"># use `head` will stop the stdout early. Use `tail` instead
-</span><span class="c1"></span><span class="nv">pid</span><span class="o">=</span><span class="k">$(</span>valgrind --tool<span class="o">=</span>callgrind <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">|</span> <span class="se">\
-</span><span class="se"></span>          tee /dev/tty <span class="p">|</span> <span class="se">\
-</span><span class="se"></span>          tail -n <span class="m">1</span> <span class="p">|</span> <span class="se">\
-</span><span class="se"></span>          grep -P -o <span class="s1">&#39;^==\d+==&#39;</span> <span class="p">|</span> <span class="se">\
-</span><span class="se"></span>          grep -P -o <span class="s1">&#39;\d+&#39;</span><span class="k">)</span>
+<span style="color:#999;font-style:italic"># use `head` will stop the stdout early. Use `tail` instead
+</span><span style="color:#999;font-style:italic"></span><span style="color:#40ffff">pid</span>=<span style="color:#6ab825;font-weight:bold">$(</span>valgrind --tool=callgrind <span style="color:#ed9d13">&#34;</span><span style="color:#40ffff">$@</span><span style="color:#ed9d13">&#34;</span> <span style="color:#3677a9">2</span>&gt;&amp;<span style="color:#3677a9">1</span> | <span style="color:#ed9d13">\
+</span><span style="color:#ed9d13"></span>          tee /dev/tty | <span style="color:#ed9d13">\
+</span><span style="color:#ed9d13"></span>          tail -n <span style="color:#3677a9">1</span> | <span style="color:#ed9d13">\
+</span><span style="color:#ed9d13"></span>          grep -P -o <span style="color:#ed9d13">&#39;^==\d+==&#39;</span> | <span style="color:#ed9d13">\
+</span><span style="color:#ed9d13"></span>          grep -P -o <span style="color:#ed9d13">&#39;\d+&#39;</span><span style="color:#6ab825;font-weight:bold">)</span>
 
-<span class="nv">wait_before_kcachegrind</span><span class="o">=</span><span class="m">2</span>
+<span style="color:#40ffff">wait_before_kcachegrind</span>=<span style="color:#3677a9">2</span>
 
-<span class="nb">echo</span> <span class="s2">&#34;############################################################&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;  Valgrind finished. Pid: </span><span class="nv">$pid</span><span class="s2">&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;  Run \&#34;kcachegrind callgrind.out.</span><span class="nv">$pid</span><span class="s2">\&#34; in </span><span class="nv">$wait_before_kcachegrind</span><span class="s2"> second(s).&#34;</span>
-<span class="nb">echo</span> <span class="s2">&#34;############################################################&#34;</span>
+<span style="color:#24909d">echo</span> <span style="color:#ed9d13">&#34;############################################################&#34;</span>
+<span style="color:#24909d">echo</span> <span style="color:#ed9d13">&#34;  Valgrind finished. Pid: </span><span style="color:#40ffff">$pid</span><span style="color:#ed9d13">&#34;</span>
+<span style="color:#24909d">echo</span> <span style="color:#ed9d13">&#34;  Run \&#34;kcachegrind callgrind.out.</span><span style="color:#40ffff">$pid</span><span style="color:#ed9d13">\&#34; in </span><span style="color:#40ffff">$wait_before_kcachegrind</span><span style="color:#ed9d13"> second(s).&#34;</span>
+<span style="color:#24909d">echo</span> <span style="color:#ed9d13">&#34;############################################################&#34;</span>
 
-sleep <span class="nv">$wait_before_kcachegrind</span>
-<span class="c1"># don&#39;t want to see output from kcachegrind, just want the gui.
-</span><span class="c1"></span>kcachegrind <span class="s2">&#34;callgrind.out.</span><span class="nv">$pid</span><span class="s2">&#34;</span> &gt;/dev/null <span class="m">2</span>&gt;/dev/null</code></pre></div><ul class="pa0">
+sleep <span style="color:#40ffff">$wait_before_kcachegrind</span>
+<span style="color:#999;font-style:italic"># don&#39;t want to see output from kcachegrind, just want the gui.
+</span><span style="color:#999;font-style:italic"></span>kcachegrind <span style="color:#ed9d13">&#34;callgrind.out.</span><span style="color:#40ffff">$pid</span><span style="color:#ed9d13">&#34;</span> &gt;/dev/null <span style="color:#3677a9">2</span>&gt;/dev/null</code></pre></div><ul class="pa0">
   
 </ul>
 <div class="mt6">
@@ -325,6 +334,13 @@ sleep <span class="nv">$wait_before_kcachegrind</span>
 
 
 
+
+  <a href="https://github.com/fd3kyt/" class="link-transition github link dib z-999 pt3 pt0-l mr2" title="Github link">
+    <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+  </a>
 
 
   </div>

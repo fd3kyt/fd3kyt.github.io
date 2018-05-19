@@ -22,6 +22,15 @@ changed</description>
     </item>
     
     <item>
+      <title>try_hugo</title>
+      <link>https://fd3kyt.github.io/posts/try_hugo/</link>
+      <pubDate>Sat, 19 May 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://fd3kyt.github.io/posts/try_hugo/</guid>
+      <description>hello, org-mode in hugo    Name Desc     org-mode markdown-like   hugo Jekyll-like    DONE  image   code cpp class Solution { public: int coinChange(vector&amp;lt;int&amp;gt;&amp;amp; coins, int amount) { int res = INT_MAX; sort(coins.begin(), coins.end()); vector&amp;lt;unordered_map&amp;lt;int, int&amp;gt;&amp;gt; record(coins.size()); dfs(record, res, coins, amount, coins.size() - 1, 0); return res == INT_MAX? -1: res; } void dfs(vector&amp;lt;unordered_map&amp;lt;int, int&amp;gt;&amp;gt; &amp;amp;record, int&amp;amp; res, vector&amp;lt;int&amp;gt;&amp;amp; coins, int target, int idx, int count) { // cout &amp;lt;&amp;lt; &amp;#34;idx:&amp;#34; &amp;lt;&amp;lt; idx &amp;lt;&amp;lt; &amp;#34; target:&amp;#34; &amp;lt;&amp;lt; target  // &amp;lt;&amp;lt; &amp;#34; count&amp;#34; &amp;lt;&amp;lt; count &amp;lt;&amp;lt; endl;  if (idx &amp;lt; 0) return; if(record[idx].</description>
+    </item>
+    
+    <item>
       <title>My First Post</title>
       <link>https://fd3kyt.github.io/posts/my-first-post/</link>
       <pubDate>Fri, 18 May 2018 09:43:41 +0800</pubDate>
@@ -129,15 +138,6 @@ haha</description>
       
       <guid>https://fd3kyt.github.io/posts/3333/</guid>
       <description>33333</description>
-    </item>
-    
-    <item>
-      <title>try_hugo</title>
-      <link>https://fd3kyt.github.io/posts/try_hugo/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/try_hugo/</guid>
-      <description>hello, org-mode in hugo    Name Desc     org-mode markdown-like   hugo Jekyll-like    DONE  image   code cpp class Solution { public: int coinChange(vector&amp;lt;int&amp;gt;&amp;amp; coins, int amount) { int res = INT_MAX; sort(coins.begin(), coins.end()); vector&amp;lt;unordered_map&amp;lt;int, int&amp;gt;&amp;gt; record(coins.size()); dfs(record, res, coins, amount, coins.size() - 1, 0); return res == INT_MAX? -1: res; } void dfs(vector&amp;lt;unordered_map&amp;lt;int, int&amp;gt;&amp;gt; &amp;amp;record, int&amp;amp; res, vector&amp;lt;int&amp;gt;&amp;amp; coins, int target, int idx, int count) { // cout &amp;lt;&amp;lt; &amp;#34;idx:&amp;#34; &amp;lt;&amp;lt; idx &amp;lt;&amp;lt; &amp;#34; target:&amp;#34; &amp;lt;&amp;lt; target  // &amp;lt;&amp;lt; &amp;#34; count&amp;#34; &amp;lt;&amp;lt; count &amp;lt;&amp;lt; endl;  if (idx &amp;lt; 0) return; if(record[idx].</description>
     </item>
     
   </channel>
