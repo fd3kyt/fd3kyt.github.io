@@ -3,6 +3,20 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://fd3kyt.github.io/posts/building-a-heap/</loc>
+    <lastmod>2018-05-20T17:23:01+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://fd3kyt.github.io/posts/about-this-blog/</loc>
+    <lastmod>2018-05-20T17:25:43+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://fd3kyt.github.io/posts/111/</loc>
     <lastmod>2018-05-19T11:14:00+08:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -90,14 +104,29 @@
   </url>
   
   <url>
+    <loc>https://fd3kyt.github.io/categories/algorithm/</loc>
+    <lastmod>2018-05-20T17:23:01+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://fd3kyt.github.io/categories/</loc>
+    <lastmod>2018-05-20T17:23:01+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fd3kyt.github.io/categories/meta/</loc>
+    <lastmod>2018-05-20T17:25:43+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://fd3kyt.github.io/posts/</loc>
-    <lastmod>2018-05-19T11:14:00+08:00</lastmod>
+    <lastmod>2018-05-20T17:23:01+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0</priority>
   </url>
@@ -125,7 +154,7 @@
   
   <url>
     <loc>https://fd3kyt.github.io/</loc>
-    <lastmod>2018-05-19T11:14:00+08:00</lastmod>
+    <lastmod>2018-05-20T17:23:01+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0</priority>
   </url>

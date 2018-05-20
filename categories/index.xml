@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Categories on fd3kyt&#39;s blog</title>
-    <link>https://fd3kyt.github.io/categories/</link>
-    <description>Recent content in Categories on fd3kyt&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    
-	<atom:link href="https://fd3kyt.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-  </channel>
+    <channel>
+        <title>
+            
+                    Categories on
+                
+            
+            fd3kyt&#39;s blog</title>
+        <link>https://fd3kyt.github.io/categories/</link>
+        <description>Recent content  in Categories
+            on fd3kyt&#39;s blog</description>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 20 May 2018 17:43:57 +0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+            <atom:link href="https://fd3kyt.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    </channel>
 </rss>
+
+

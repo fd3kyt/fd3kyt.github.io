@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>
+            
+                    Algorithm on
+                
+            
+            fd3kyt&#39;s blog</title>
+        <link>https://fd3kyt.github.io/categories/algorithm/</link>
+        <description>Recent content  in Algorithm
+            on fd3kyt&#39;s blog</description>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 20 May 2018 17:43:57 +0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+            <atom:link href="https://fd3kyt.github.io/categories/algorithm/index.xml" rel="self" type="application/rss+xml" />
+            
+            <item>
+                <title>Building a heap</title>
+                <link>https://fd3kyt.github.io/posts/building-a-heap/</link>
+                <description>
+
+&lt;p&gt;Given an array with n elements, there are two ways to build a heap on
+it:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Top-down&lt;/li&gt;
+&lt;li&gt;Bottom-up&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;the-top-down-approach&#34;&gt;The top-down approach&lt;/h2&gt;
+
+&lt;p&gt;The first way is quite straightforward. We just do n insertions.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;build_heap_in_place&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;range&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)):&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;sift_up&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The part in [0, i) is the heap we have built so far. &lt;code&gt;l[i]&lt;/code&gt; is the new
+element inserted.&lt;/p&gt;
+
+
+
+
+
+&lt;figure&gt;
+    
+         
+            
+            
+            &lt;img src=&#34;https://fd3kyt.github.io/ox-hugo/screenshot_2018-05-02_16-26-44_2018-05-20_15-53-07.png&#34;
+        
+             alt=&#34;/ox-hugo/screenshot_2018-05-02_16-26-44_2018-05-20_15-53-07.png&#34;/&gt;
+        
+        
+&lt;/figure&gt;
+
+
+&lt;p&gt;This approach runs in &lt;code&gt;O(n*log(n))&lt;/code&gt; time.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-bottom-up-approach&#34;&gt;The bottom-up approach&lt;/h2&gt;
+
+&lt;p&gt;The second way runs in O(n), even in the worst case.&amp;nbsp;&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:fn-1&#34;&gt;&lt;a href=&#34;#fn:fn-1&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;build_heap_in_place&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;reversed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;range&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;//&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)):&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# skip leaves&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;sift_down&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&#34;why-does-it-work&#34;&gt;Why does it work?&lt;/h3&gt;
+
+&lt;p&gt;In the operation &lt;code&gt;pop_max()&lt;/code&gt; (max heap), we move the last element to
+the top (&lt;code&gt;heap_size -= 1&lt;/code&gt;), and call &lt;code&gt;sift_down()&lt;/code&gt; on it.&lt;/p&gt;
+
+&lt;p&gt;Before the &lt;code&gt;sift_down()&lt;/code&gt;, the new top node usually violates the heap
+property ( &lt;code&gt;l[i] &amp;gt;= max(l[left_child(i)], l[right_child(i)])&lt;/code&gt;
+). However, the two subtrees of the top are both valid heaps.&lt;/p&gt;
+
+&lt;p&gt;What happens here in each iteration is quite similar.&lt;/p&gt;
+
+
+
+
+
+&lt;figure&gt;
+    
+         
+            
+            
+            &lt;img src=&#34;https://fd3kyt.github.io/ox-hugo/screenshot_2018-05-02_16-26-58_2018-05-20_15-59-10.png&#34;
+        
+             alt=&#34;/ox-hugo/screenshot_2018-05-02_16-26-58_2018-05-20_15-59-10.png&#34;/&gt;
+        
+        
+&lt;/figure&gt;
+
+
+&lt;h3 id=&#34;complexity&#34;&gt;Complexity&lt;/h3&gt;
+
+&lt;p&gt;The time complexity of this approach is &lt;code&gt;O(n)&lt;/code&gt; instead of
+&lt;code&gt;O(n*log(n))&lt;/code&gt;, for there are exponentially more nodes at the bottom,
+which need less &lt;code&gt;sift_down()&lt;/code&gt;.&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:fn-2&#34;&gt;&lt;a href=&#34;#fn:fn-2&#34;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Last level: don&amp;rsquo;t need &lt;code&gt;sift_down&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;The second to last level: at most 1 &lt;code&gt;sift_down&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;The third to last level: at most 2 &lt;code&gt;sift_down&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;1 * n/4 + 2 * n/8 + 3 * n/16 + &amp;hellip; = O(n)&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;There are two approaches to build a heap.&lt;/p&gt;
+
+&lt;p&gt;The top-down approach:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Can be considered as doing n insertions&lt;/li&gt;
+&lt;li&gt;O(n*log(n))&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The bottom-up approach:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Associated with &lt;code&gt;take_max()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;O(n)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+
+&lt;hr /&gt;
+
+&lt;ol&gt;
+&lt;li id=&#34;fn:fn-1&#34;&gt;&lt;a href=&#34;http://www.diku.dk/~jyrki/PE-lab/Jesper/heaplab/heapsurvey_html/node9.html&#34;&gt;http://www.diku.dk/~jyrki/PE-lab/Jesper/heaplab/heapsurvey_html/node9.html&lt;/a&gt;
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:fn-1&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&#34;fn:fn-2&#34;&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Binary_heap#Building_a_heap&#34;&gt;https://en.wikipedia.org/wiki/Binary_heap#Building_a_heap&lt;/a&gt;
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:fn-2&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                             
+                            
+                                
+                                 
+                                    <category domain="https://fd3kyt.github.io/categories/algorithm">algorithm</category>
+                                
+                            
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/building-a-heap/</guid>
+                <pubDate>Sun, 20 May 2018 16:38:00 +0800</pubDate>
+            </item>
+        
+    </channel>
+</rss>
+
+

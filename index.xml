@@ -1,144 +1,602 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>fd3kyt&#39;s blog</title>
-    <link>https://fd3kyt.github.io/</link>
-    <description>Recent content on fd3kyt&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sat, 19 May 2018 11:14:00 +0800</lastBuildDate>
+    <channel>
+        <title>
+            
+            
+            fd3kyt&#39;s blog</title>
+        <link>https://fd3kyt.github.io/</link>
+        <description>Recent content 
+            on fd3kyt&#39;s blog</description>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 20 May 2018 17:43:57 +0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+            <atom:link href="https://fd3kyt.github.io/index.xml" rel="self" type="application/rss+xml" />
+            
+            <item>
+                <title>Building a heap</title>
+                <link>https://fd3kyt.github.io/posts/building-a-heap/</link>
+                <description>
+
+&lt;p&gt;Given an array with n elements, there are two ways to build a heap on
+it:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Top-down&lt;/li&gt;
+&lt;li&gt;Bottom-up&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;the-top-down-approach&#34;&gt;The top-down approach&lt;/h2&gt;
+
+&lt;p&gt;The first way is quite straightforward. We just do n insertions.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;build_heap_in_place&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;range&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)):&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;sift_up&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The part in [0, i) is the heap we have built so far. &lt;code&gt;l[i]&lt;/code&gt; is the new
+element inserted.&lt;/p&gt;
+
+
+
+
+
+&lt;figure&gt;
     
-	<atom:link href="https://fd3kyt.github.io/index.xml" rel="self" type="application/rss+xml" />
+         
+            
+            
+            &lt;img src=&#34;https://fd3kyt.github.io/ox-hugo/screenshot_2018-05-02_16-26-44_2018-05-20_15-53-07.png&#34;
+        
+             alt=&#34;/ox-hugo/screenshot_2018-05-02_16-26-44_2018-05-20_15-53-07.png&#34;/&gt;
+        
+        
+&lt;/figure&gt;
+
+
+&lt;p&gt;This approach runs in &lt;code&gt;O(n*log(n))&lt;/code&gt; time.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-bottom-up-approach&#34;&gt;The bottom-up approach&lt;/h2&gt;
+
+&lt;p&gt;The second way runs in O(n), even in the worst case.&amp;nbsp;&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:fn-1&#34;&gt;&lt;a href=&#34;#fn:fn-1&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;build_heap_in_place&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;reversed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;range&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;//&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)):&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# skip leaves&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;sift_down&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&#34;why-does-it-work&#34;&gt;Why does it work?&lt;/h3&gt;
+
+&lt;p&gt;In the operation &lt;code&gt;pop_max()&lt;/code&gt; (max heap), we move the last element to
+the top (&lt;code&gt;heap_size -= 1&lt;/code&gt;), and call &lt;code&gt;sift_down()&lt;/code&gt; on it.&lt;/p&gt;
+
+&lt;p&gt;Before the &lt;code&gt;sift_down()&lt;/code&gt;, the new top node usually violates the heap
+property ( &lt;code&gt;l[i] &amp;gt;= max(l[left_child(i)], l[right_child(i)])&lt;/code&gt;
+). However, the two subtrees of the top are both valid heaps.&lt;/p&gt;
+
+&lt;p&gt;What happens here in each iteration is quite similar.&lt;/p&gt;
+
+
+
+
+
+&lt;figure&gt;
     
+         
+            
+            
+            &lt;img src=&#34;https://fd3kyt.github.io/ox-hugo/screenshot_2018-05-02_16-26-58_2018-05-20_15-59-10.png&#34;
+        
+             alt=&#34;/ox-hugo/screenshot_2018-05-02_16-26-58_2018-05-20_15-59-10.png&#34;/&gt;
+        
+        
+&lt;/figure&gt;
+
+
+&lt;h3 id=&#34;complexity&#34;&gt;Complexity&lt;/h3&gt;
+
+&lt;p&gt;The time complexity of this approach is &lt;code&gt;O(n)&lt;/code&gt; instead of
+&lt;code&gt;O(n*log(n))&lt;/code&gt;, for there are exponentially more nodes at the bottom,
+which need less &lt;code&gt;sift_down()&lt;/code&gt;.&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:fn-2&#34;&gt;&lt;a href=&#34;#fn:fn-2&#34;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Last level: don&amp;rsquo;t need &lt;code&gt;sift_down&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;The second to last level: at most 1 &lt;code&gt;sift_down&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;The third to last level: at most 2 &lt;code&gt;sift_down&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;1 * n/4 + 2 * n/8 + 3 * n/16 + &amp;hellip; = O(n)&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;There are two approaches to build a heap.&lt;/p&gt;
+
+&lt;p&gt;The top-down approach:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Can be considered as doing n insertions&lt;/li&gt;
+&lt;li&gt;O(n*log(n))&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The bottom-up approach:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Associated with &lt;code&gt;take_max()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;O(n)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+
+&lt;hr /&gt;
+
+&lt;ol&gt;
+&lt;li id=&#34;fn:fn-1&#34;&gt;&lt;a href=&#34;http://www.diku.dk/~jyrki/PE-lab/Jesper/heaplab/heapsurvey_html/node9.html&#34;&gt;http://www.diku.dk/~jyrki/PE-lab/Jesper/heaplab/heapsurvey_html/node9.html&lt;/a&gt;
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:fn-1&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&#34;fn:fn-2&#34;&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Binary_heap#Building_a_heap&#34;&gt;https://en.wikipedia.org/wiki/Binary_heap#Building_a_heap&lt;/a&gt;
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:fn-2&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                             
+                            
+                                
+                                 
+                                    <category domain="https://fd3kyt.github.io/categories/algorithm">algorithm</category>
+                                
+                            
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/building-a-heap/</guid>
+                <pubDate>Sun, 20 May 2018 16:38:00 +0800</pubDate>
+            </item>
+        
+            
+            <item>
+                <title>About this blog</title>
+                <link>https://fd3kyt.github.io/posts/about-this-blog/</link>
+                <description>&lt;dl&gt;
+&lt;dt&gt;hugo&lt;/dt&gt;
+&lt;dd&gt;&lt;a href=&#34;https://gohugo.io/getting-started/quick-start/&#34;&gt;https://gohugo.io/getting-started/quick-start/&lt;/a&gt;&lt;/dd&gt;
+&lt;dt&gt;ox-hugo&lt;/dt&gt;
+&lt;dd&gt;&lt;a href=&#34;https://github.com/kaushalmodi/ox-hugo&#34;&gt;https://github.com/kaushalmodi/ox-hugo&lt;/a&gt;&lt;/dd&gt;
+&lt;/dl&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                             
+                            
+                                
+                                 
+                                    <category domain="https://fd3kyt.github.io/categories/meta">meta</category>
+                                
+                            
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/about-this-blog/</guid>
+                <pubDate>Sun, 20 May 2018 00:00:00 +0800</pubDate>
+            </item>
+        
+            
+            <item>
+                <title>1</title>
+                <link>https://fd3kyt.github.io/posts/111/</link>
+                <description>&lt;p&gt;11111&lt;/p&gt;
+
+&lt;p&gt;changed&lt;/p&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                     
+                        
+                             
+                            
+                                
+                                 
+                                    <category domain="https://fd3kyt.github.io/tags/try-tag">try-tag</category>
+                                 
+                                    <category domain="https://fd3kyt.github.io/tags/tag2">tag2</category>
+                                
+                            
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/111/</guid>
+                <pubDate>Sat, 19 May 2018 11:14:00 +0800</pubDate>
+            </item>
+        
+            
+            <item>
+                <title>try_hugo</title>
+                <link>https://fd3kyt.github.io/posts/try_hugo/</link>
+                <description>
+
+&lt;h2 id=&#34;hello-org-mode-in-hugo&#34;&gt;hello, org-mode in hugo&lt;/h2&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Name&lt;/th&gt;
+&lt;th&gt;Desc&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;org-mode&lt;/td&gt;
+&lt;td&gt;markdown-like&lt;/td&gt;
+&lt;/tr&gt;
+
+&lt;tr&gt;
+&lt;td&gt;hugo&lt;/td&gt;
+&lt;td&gt;Jekyll-like&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&#34;image&#34;&gt;&lt;span class=&#34;todo DONE_&#34;&gt;DONE &lt;/span&gt; image&lt;/h2&gt;
+
+
+
+
+
+&lt;figure&gt;
     
-    <item>
-      <title>1</title>
-      <link>https://fd3kyt.github.io/posts/111/</link>
-      <pubDate>Sat, 19 May 2018 11:14:00 +0800</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/111/</guid>
-      <description>11111
-changed</description>
-    </item>
-    
-    <item>
-      <title>try_hugo</title>
-      <link>https://fd3kyt.github.io/posts/try_hugo/</link>
-      <pubDate>Sat, 19 May 2018 00:00:00 +0800</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/try_hugo/</guid>
-      <description>hello, org-mode in hugo    Name Desc     org-mode markdown-like   hugo Jekyll-like    DONE  image   code cpp class Solution { public: int coinChange(vector&amp;lt;int&amp;gt;&amp;amp; coins, int amount) { int res = INT_MAX; sort(coins.begin(), coins.end()); vector&amp;lt;unordered_map&amp;lt;int, int&amp;gt;&amp;gt; record(coins.size()); dfs(record, res, coins, amount, coins.size() - 1, 0); return res == INT_MAX? -1: res; } void dfs(vector&amp;lt;unordered_map&amp;lt;int, int&amp;gt;&amp;gt; &amp;amp;record, int&amp;amp; res, vector&amp;lt;int&amp;gt;&amp;amp; coins, int target, int idx, int count) { // cout &amp;lt;&amp;lt; &amp;#34;idx:&amp;#34; &amp;lt;&amp;lt; idx &amp;lt;&amp;lt; &amp;#34; target:&amp;#34; &amp;lt;&amp;lt; target  // &amp;lt;&amp;lt; &amp;#34; count&amp;#34; &amp;lt;&amp;lt; count &amp;lt;&amp;lt; endl;  if (idx &amp;lt; 0) return; if(record[idx].</description>
-    </item>
-    
-    <item>
-      <title>My First Post</title>
-      <link>https://fd3kyt.github.io/posts/my-first-post/</link>
-      <pubDate>Fri, 18 May 2018 09:43:41 +0800</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/my-first-post/</guid>
-      <description>fd3kyt</description>
-    </item>
-    
-    <item>
-      <title>12</title>
-      <link>https://fd3kyt.github.io/posts/1112/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/1112/</guid>
-      <description>11111</description>
-    </item>
-    
-    <item>
-      <title>123</title>
-      <link>https://fd3kyt.github.io/posts/11123/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/11123/</guid>
-      <description>11111</description>
-    </item>
-    
-    <item>
-      <title>13</title>
-      <link>https://fd3kyt.github.io/posts/1113/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/1113/</guid>
-      <description>11111</description>
-    </item>
-    
-    <item>
-      <title>2</title>
-      <link>https://fd3kyt.github.io/posts/222/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/222/</guid>
-      <description>22222
-This is changed, too.</description>
-    </item>
-    
-    <item>
-      <title>22</title>
-      <link>https://fd3kyt.github.io/posts/2222/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/2222/</guid>
-      <description>22222
-haha</description>
-    </item>
-    
-    <item>
-      <title>223</title>
-      <link>https://fd3kyt.github.io/posts/22223/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/22223/</guid>
-      <description>22222</description>
-    </item>
-    
-    <item>
-      <title>23</title>
-      <link>https://fd3kyt.github.io/posts/2223/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/2223/</guid>
-      <description>22222</description>
-    </item>
-    
-    <item>
-      <title>3</title>
-      <link>https://fd3kyt.github.io/posts/333/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/333/</guid>
-      <description>33333</description>
-    </item>
-    
-    <item>
-      <title>32</title>
-      <link>https://fd3kyt.github.io/posts/3332/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/3332/</guid>
-      <description>33333</description>
-    </item>
-    
-    <item>
-      <title>323</title>
-      <link>https://fd3kyt.github.io/posts/33323/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/33323/</guid>
-      <description>33333</description>
-    </item>
-    
-    <item>
-      <title>33</title>
-      <link>https://fd3kyt.github.io/posts/3333/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://fd3kyt.github.io/posts/3333/</guid>
-      <description>33333</description>
-    </item>
-    
-  </channel>
+         
+            
+            
+            &lt;img src=&#34;https://fd3kyt.github.io/ox-hugo/screenshot_2018-05-18_11-23-32.png&#34;
+        
+             alt=&#34;/ox-hugo/screenshot_2018-05-18_11-23-32.png&#34;/&gt;
+        
+        
+&lt;/figure&gt;
+
+
+&lt;h2 id=&#34;code&#34;&gt;code&lt;/h2&gt;
+
+&lt;h3 id=&#34;cpp&#34;&gt;cpp&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Solution&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;public&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;
+    &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;coinChange&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vector&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;coins&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;amount&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;INT_MAX&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;sort&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;coins&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;begin&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;coins&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;end&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;());&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;vector&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;unordered_map&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;record&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;coins&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;size&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;());&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;dfs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;record&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;coins&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;amount&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;coins&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;size&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;INT_MAX&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;kt&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dfs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vector&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;unordered_map&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;record&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+             &lt;span class=&#34;n&#34;&gt;vector&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;amp;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;coins&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;target&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;count&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;// cout &amp;lt;&amp;lt; &amp;#34;idx:&amp;#34; &amp;lt;&amp;lt; idx &amp;lt;&amp;lt; &amp;#34;  target:&amp;#34; &amp;lt;&amp;lt; target
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;//      &amp;lt;&amp;lt; &amp;#34; count&amp;#34; &amp;lt;&amp;lt; count &amp;lt;&amp;lt; endl;
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;record&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;].&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;count&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;target&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;and&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;record&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;target&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;count&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+            &lt;span class=&#34;c1&#34;&gt;// cout &amp;lt;&amp;lt; &amp;#34;cached&amp;#34; &amp;lt;&amp;lt; endl;
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;            &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+        &lt;span class=&#34;c1&#34;&gt;// if(record[idx].count(target) &amp;gt; 0 and record[idx][target] &amp;gt; count){
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;//     cout &amp;lt;&amp;lt; &amp;#34;cached, bigger: idx:&amp;#34; &amp;lt;&amp;lt; idx
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;//          &amp;lt;&amp;lt; &amp;#34; target:&amp;#34; &amp;lt;&amp;lt; target
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;//          &amp;lt;&amp;lt; &amp;#34; count:&amp;#34; &amp;lt;&amp;lt; count
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;//          &amp;lt;&amp;lt; &amp;#34; cached count:&amp;#34; &amp;lt;&amp;lt; record[idx][target] &amp;lt;&amp;lt; endl;
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;c1&#34;&gt;// }
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;        &lt;span class=&#34;n&#34;&gt;record&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;target&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;count&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+
+
+        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;target&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;coins&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;min&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;count&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;target&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;coins&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]);&lt;/span&gt;
+            &lt;span class=&#34;c1&#34;&gt;// record[idx][target] = count;  // this makes it wrong
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;target&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;/&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;coins&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;--&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+            &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;count&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;break&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// pruing
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;            &lt;span class=&#34;n&#34;&gt;dfs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;record&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;coins&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;target&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;coins&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;idx&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;count&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&#34;python&#34;&gt;python&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;sys&lt;/span&gt;
+
+
+&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;HostPathMap&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;customization&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;fm&#34;&gt;__getitem__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;key&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;assert&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;key&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;isdigit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;customization&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+            &lt;span class=&#34;n&#34;&gt;key&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;192.168.1.{}&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;format&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;key&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)]&lt;/span&gt;
+        &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sys&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;stdin&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;strip&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;host&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;path&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;split&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;___&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;replace&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;__&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;/&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;expanded_host&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;working_dir&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;HostPathMap&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;host&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;working_dir&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;command&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;ssh {host} &lt;/span&gt;&lt;span class=&#34;se&#34;&gt;\&amp;#34;&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;mkdir -p $(dirname {path})&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;\&amp;#34;&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;;
+&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;scp ./{name} {host}:{path}&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;format&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;host&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;expanded_host&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;sys&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;stdout&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;write&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;command&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&#34;shell&#34;&gt;shell&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;cp&#34;&gt;#!/usr/bin/env bash
+&lt;/span&gt;&lt;span class=&#34;cp&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;# Usage: callgrind.sh ls -la
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;set&lt;/span&gt; -e
+
+&lt;span class=&#34;nv&#34;&gt;wait_before_valgrind&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1&lt;/span&gt;
+
+&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;############################################################&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;  Will run:&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;  valgrind --tool=callgrind&amp;#34;&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$@&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;  in &lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$wait_before_valgrind&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt; second(s).&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;############################################################&amp;#34;&lt;/span&gt;
+
+sleep &lt;span class=&#34;nv&#34;&gt;$wait_before_valgrind&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;# use `head` will stop the stdout early. Use `tail` instead
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;pid&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;$(&lt;/span&gt;valgrind --tool&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;callgrind &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$@&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt; &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&amp;gt;&lt;span class=&#34;p&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;          tee /dev/tty &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;          tail -n &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;          grep -P -o &lt;span class=&#34;s1&#34;&gt;&amp;#39;^==\d+==&amp;#39;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;span class=&#34;se&#34;&gt;&lt;/span&gt;          grep -P -o &lt;span class=&#34;s1&#34;&gt;&amp;#39;\d+&amp;#39;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;)&lt;/span&gt;
+
+&lt;span class=&#34;nv&#34;&gt;wait_before_kcachegrind&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;
+
+&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;############################################################&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;  Valgrind finished. Pid: &lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$pid&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;  Run \&amp;#34;kcachegrind callgrind.out.&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$pid&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;\&amp;#34; in &lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$wait_before_kcachegrind&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt; second(s).&amp;#34;&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;############################################################&amp;#34;&lt;/span&gt;
+
+sleep &lt;span class=&#34;nv&#34;&gt;$wait_before_kcachegrind&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;# don&amp;#39;t want to see output from kcachegrind, just want the gui.
+&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;kcachegrind &lt;span class=&#34;s2&#34;&gt;&amp;#34;callgrind.out.&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$pid&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt; &amp;gt;/dev/null &lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&amp;gt;/dev/null&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id=&#34;new-headline&#34;&gt;new headline&lt;/h2&gt;
+
+&lt;p&gt;New text.&lt;/p&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/try_hugo/</guid>
+                <pubDate>Sat, 19 May 2018 00:00:00 +0800</pubDate>
+            </item>
+        
+            
+            <item>
+                <title>My First Post</title>
+                <link>https://fd3kyt.github.io/posts/my-first-post/</link>
+                <description>&lt;p&gt;fd3kyt&lt;/p&gt;
+</description>
+                
+                
+                     
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/my-first-post/</guid>
+                <pubDate>Fri, 18 May 2018 09:43:41 +0800</pubDate>
+            </item>
+        
+            
+            <item>
+                <title>12</title>
+                <link>https://fd3kyt.github.io/posts/1112/</link>
+                <description>&lt;p&gt;11111&lt;/p&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/1112/</guid>
+                
+            </item>
+        
+            
+            <item>
+                <title>123</title>
+                <link>https://fd3kyt.github.io/posts/11123/</link>
+                <description>&lt;p&gt;11111&lt;/p&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/11123/</guid>
+                
+            </item>
+        
+            
+            <item>
+                <title>13</title>
+                <link>https://fd3kyt.github.io/posts/1113/</link>
+                <description>&lt;p&gt;11111&lt;/p&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/1113/</guid>
+                
+            </item>
+        
+            
+            <item>
+                <title>2</title>
+                <link>https://fd3kyt.github.io/posts/222/</link>
+                <description>&lt;p&gt;22222&lt;/p&gt;
+
+&lt;p&gt;This is changed, too.&lt;/p&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/222/</guid>
+                
+            </item>
+        
+            
+            <item>
+                <title>22</title>
+                <link>https://fd3kyt.github.io/posts/2222/</link>
+                <description>&lt;p&gt;22222&lt;/p&gt;
+
+&lt;p&gt;haha&lt;/p&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/2222/</guid>
+                
+            </item>
+        
+            
+            <item>
+                <title>223</title>
+                <link>https://fd3kyt.github.io/posts/22223/</link>
+                <description>&lt;p&gt;22222&lt;/p&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/22223/</guid>
+                
+            </item>
+        
+            
+            <item>
+                <title>23</title>
+                <link>https://fd3kyt.github.io/posts/2223/</link>
+                <description>&lt;p&gt;22222&lt;/p&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/2223/</guid>
+                
+            </item>
+        
+            
+            <item>
+                <title>3</title>
+                <link>https://fd3kyt.github.io/posts/333/</link>
+                <description>&lt;p&gt;33333&lt;/p&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/333/</guid>
+                
+            </item>
+        
+            
+            <item>
+                <title>32</title>
+                <link>https://fd3kyt.github.io/posts/3332/</link>
+                <description>&lt;p&gt;33333&lt;/p&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/3332/</guid>
+                
+            </item>
+        
+            
+            <item>
+                <title>323</title>
+                <link>https://fd3kyt.github.io/posts/33323/</link>
+                <description>&lt;p&gt;33333&lt;/p&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/33323/</guid>
+                
+            </item>
+        
+    </channel>
 </rss>
+
+

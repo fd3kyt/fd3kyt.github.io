@@ -16,7 +16,7 @@
 
     <title>
         
-            23 ❚ fd3kyt&#39;s blog
+            Building a heap ❚ fd3kyt&#39;s blog
         
     </title>
 
@@ -192,14 +192,21 @@
 
     
  
-<meta property="og:title" content="23" />
+<meta property="og:title" content="Building a heap" />
 <meta property="og:description"
-      content="22222" />
+      content="Given an array with n elements, there are two ways to build a heap on it:
+ Top-down Bottom-up  The top-down approach The first way is quite straightforward. We just do n insertions.
+def build_heap_in_place(l): for i in range(len(l)): sift_up(l, i) The part in [0, i) is the heap we have built so far. l[i] is the new element inserted.
+  This approach runs in O(n*log(n)) time." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://fd3kyt.github.io/posts/2223/" />
+<meta property="og:url" content="https://fd3kyt.github.io/posts/building-a-heap/" />
 
 
     
+        <meta property="article:published_time" content="2018-05-20T16:38:00&#43;08:00"/>
+    
+    
+        <meta property="article:modified_time" content="2018-05-20T17:23:01&#43;08:00"/>
     
 
 
@@ -217,8 +224,11 @@
 
 
      <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="23"/>
-<meta name="twitter:description" content="22222"/>
+<meta name="twitter:title" content="Building a heap"/>
+<meta name="twitter:description" content="Given an array with n elements, there are two ways to build a heap on it:
+ Top-down Bottom-up  The top-down approach The first way is quite straightforward. We just do n insertions.
+def build_heap_in_place(l): for i in range(len(l)): sift_up(l, i) The part in [0, i) is the heap we have built so far. l[i] is the new element inserted.
+  This approach runs in O(n*log(n)) time."/>
 
 
     
@@ -274,6 +284,28 @@
     <div class="taxo no-text-decoration">
          
             
+                <ul class="no-bullets inline categories">
+                    
+                        
+                        
+                        
+                            
+                            
+                            
+                            
+                            
+                            <li class="__algorithm__"
+                                
+                                
+                                title="This is the only post categorized in ‘algorithm’"
+                                
+                            >
+                                <a class="p-category" href="https://fd3kyt.github.io/categories/algorithm/">algorithm</a>
+                            </li>
+                        
+                    
+                </ul>
+            
          
             
         
@@ -281,14 +313,25 @@
 
 </div>
 
-        <h1 class="post-title p-name">23</h1>
+        <h1 class="post-title p-name">Building a heap</h1>
 
         
-        <data class="u-url" value="https://fd3kyt.github.io/posts/2223/"></data>
+        <data class="u-url" value="https://fd3kyt.github.io/posts/building-a-heap/"></data>
 
         <div class="date-syndication">
             
 
+
+    
+    
+    <div class="post-date">
+        
+        <time datetime="2018-05-20T16:38:00+0800" class="dt-published">Sun May 20, 2018</time>
+        
+            
+            <span class="dt-updated">(Updated on Sun May 20, 2018)</span>
+        
+    </div>
 
 
             
@@ -297,6 +340,24 @@
         </div>
 
         
+            
+                <div class="toc">
+                    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#the-top-down-approach">The top-down approach</a></li>
+<li><a href="#the-bottom-up-approach">The bottom-up approach</a>
+<ul>
+<li><a href="#why-does-it-work">Why does it work?</a></li>
+<li><a href="#complexity">Complexity</a></li>
+</ul></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul></li>
+</ul>
+</nav>
+                    <a href="#top" class="back-to-top">Back to top</a>
+                </div>
             
             <script src="https://fd3kyt.github.io/js/libs/jquery/3.3.1/jquery.slim.min.js"></script>
 <script>(function() {
@@ -353,7 +414,121 @@
 
 
         <div class="e-content">
-            <p>22222</p>
+            
+
+<p>Given an array with n elements, there are two ways to build a heap on
+it:</p>
+
+<ul>
+<li>Top-down</li>
+<li>Bottom-up</li>
+</ul>
+
+<h2 id="the-top-down-approach">The top-down approach&nbsp;<a class="headline-hash no-text-decoration" href="#the-top-down-approach">#</a> </h2>
+
+<p>The first way is quite straightforward. We just do n insertions.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">build_heap_in_place</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)):</span>
+        <span class="n">sift_up</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span></code></pre></div>
+<p>The part in [0, i) is the heap we have built so far. <code>l[i]</code> is the new
+element inserted.</p>
+
+
+
+
+
+<figure>
+    
+         
+            
+            
+            <img src="https://fd3kyt.github.io/ox-hugo/screenshot_2018-05-02_16-26-44_2018-05-20_15-53-07.png"
+        
+             alt="/ox-hugo/screenshot_2018-05-02_16-26-44_2018-05-20_15-53-07.png"/>
+        
+        
+</figure>
+
+
+<p>This approach runs in <code>O(n*log(n))</code> time.</p>
+
+<h2 id="the-bottom-up-approach">The bottom-up approach&nbsp;<a class="headline-hash no-text-decoration" href="#the-bottom-up-approach">#</a> </h2>
+
+<p>The second way runs in O(n), even in the worst case.&nbsp;<sup class="footnote-ref" id="fnref:fn-1"><a href="#fn:fn-1">1</a></sup></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">build_heap_in_place</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">)):</span> <span class="c1"># skip leaves</span>
+        <span class="n">sift_down</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span></code></pre></div>
+<h3 id="why-does-it-work">Why does it work?&nbsp;<a class="headline-hash no-text-decoration" href="#why-does-it-work">#</a> </h3>
+
+<p>In the operation <code>pop_max()</code> (max heap), we move the last element to
+the top (<code>heap_size -= 1</code>), and call <code>sift_down()</code> on it.</p>
+
+<p>Before the <code>sift_down()</code>, the new top node usually violates the heap
+property ( <code>l[i] &gt;= max(l[left_child(i)], l[right_child(i)])</code>
+). However, the two subtrees of the top are both valid heaps.</p>
+
+<p>What happens here in each iteration is quite similar.</p>
+
+
+
+
+
+<figure>
+    
+         
+            
+            
+            <img src="https://fd3kyt.github.io/ox-hugo/screenshot_2018-05-02_16-26-58_2018-05-20_15-59-10.png"
+        
+             alt="/ox-hugo/screenshot_2018-05-02_16-26-58_2018-05-20_15-59-10.png"/>
+        
+        
+</figure>
+
+
+<h3 id="complexity">Complexity&nbsp;<a class="headline-hash no-text-decoration" href="#complexity">#</a> </h3>
+
+<p>The time complexity of this approach is <code>O(n)</code> instead of
+<code>O(n*log(n))</code>, for there are exponentially more nodes at the bottom,
+which need less <code>sift_down()</code>.<sup class="footnote-ref" id="fnref:fn-2"><a href="#fn:fn-2">2</a></sup></p>
+
+<ul>
+<li>Last level: don&rsquo;t need <code>sift_down</code></li>
+<li>The second to last level: at most 1 <code>sift_down</code></li>
+<li>The third to last level: at most 2 <code>sift_down</code></li>
+<li>&hellip;</li>
+</ul>
+
+<p>1 * n/4 + 2 * n/8 + 3 * n/16 + &hellip; = O(n)</p>
+
+<h2 id="conclusion">Conclusion&nbsp;<a class="headline-hash no-text-decoration" href="#conclusion">#</a> </h2>
+
+<p>There are two approaches to build a heap.</p>
+
+<p>The top-down approach:</p>
+
+<ul>
+<li>Can be considered as doing n insertions</li>
+<li>O(n*log(n))</li>
+</ul>
+
+<p>The bottom-up approach:</p>
+
+<ul>
+<li>Associated with <code>take_max()</code></li>
+<li>O(n)</li>
+</ul>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:fn-1"><a href="http://www.diku.dk/~jyrki/PE-lab/Jesper/heaplab/heapsurvey_html/node9.html">http://www.diku.dk/~jyrki/PE-lab/Jesper/heaplab/heapsurvey_html/node9.html</a>
+ <a class="footnote-return" href="#fnref:fn-1"><sup>[return]</sup></a></li>
+<li id="fn:fn-2"><a href="https://en.wikipedia.org/wiki/Binary_heap#Building_a_heap">https://en.wikipedia.org/wiki/Binary_heap#Building_a_heap</a>
+ <a class="footnote-return" href="#fnref:fn-2"><sup>[return]</sup></a></li>
+</ol>
+</div>
 
 
         </div>
@@ -373,6 +548,28 @@
     <div class="taxo no-text-decoration">
          
             
+                <ul class="no-bullets inline categories">
+                    
+                        
+                        
+                        
+                            
+                            
+                            
+                            
+                            
+                            <li class="__algorithm__"
+                                
+                                
+                                title="This is the only post categorized in ‘algorithm’"
+                                
+                            >
+                                <a class="p-category" href="https://fd3kyt.github.io/categories/algorithm/">algorithm</a>
+                            </li>
+                        
+                    
+                </ul>
+            
          
             
         
@@ -385,13 +582,9 @@
 
 <div class="prev-next-navigator clear-float">
     
-        <span class="prev-post left no-text-decoration">
-            <a href="https://fd3kyt.github.io/posts/22223/" class="nobr">« 223</a>
-        </span>
-    
     
         <span class="next-post right no-text-decoration">
-            <a href="https://fd3kyt.github.io/posts/333/" class="nobr">3 »</a>
+            <a href="https://fd3kyt.github.io/posts/about-this-blog/" class="nobr">About this blog »</a>
         </span>
     
 </div>

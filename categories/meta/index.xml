@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>
+            
+                    Meta on
+                
+            
+            fd3kyt&#39;s blog</title>
+        <link>https://fd3kyt.github.io/categories/meta/</link>
+        <description>Recent content  in Meta
+            on fd3kyt&#39;s blog</description>
+        <language>en-us</language>
+        <lastBuildDate>Sun, 20 May 2018 17:43:57 +0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+            <atom:link href="https://fd3kyt.github.io/categories/meta/index.xml" rel="self" type="application/rss+xml" />
+            
+            <item>
+                <title>About this blog</title>
+                <link>https://fd3kyt.github.io/posts/about-this-blog/</link>
+                <description>&lt;dl&gt;
+&lt;dt&gt;hugo&lt;/dt&gt;
+&lt;dd&gt;&lt;a href=&#34;https://gohugo.io/getting-started/quick-start/&#34;&gt;https://gohugo.io/getting-started/quick-start/&lt;/a&gt;&lt;/dd&gt;
+&lt;dt&gt;ox-hugo&lt;/dt&gt;
+&lt;dd&gt;&lt;a href=&#34;https://github.com/kaushalmodi/ox-hugo&#34;&gt;https://github.com/kaushalmodi/ox-hugo&lt;/a&gt;&lt;/dd&gt;
+&lt;/dl&gt;
+</description>
+                
+                        <author>fd3kyt@fakeEmailToMakeValidatorHappy.com (fd3kyt)</author>
+                
+                     
+                        
+                             
+                            
+                                
+                                 
+                                    <category domain="https://fd3kyt.github.io/categories/meta">meta</category>
+                                
+                            
+                        
+                     
+                        
+                    
+                
+                <guid>https://fd3kyt.github.io/posts/about-this-blog/</guid>
+                <pubDate>Sun, 20 May 2018 00:00:00 +0800</pubDate>
+            </item>
+        
+    </channel>
+</rss>
+
+

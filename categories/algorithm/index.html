@@ -16,7 +16,7 @@
 
     <title>
         
-            23 ❚ fd3kyt&#39;s blog
+            Algorithm ❚ fd3kyt&#39;s blog
         
     </title>
 
@@ -192,14 +192,15 @@
 
     
  
-<meta property="og:title" content="23" />
+<meta property="og:title" content="Algorithm" />
 <meta property="og:description"
-      content="22222" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://fd3kyt.github.io/posts/2223/" />
+      content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://fd3kyt.github.io/categories/algorithm/" />
 
 
     
+        <meta property="og:updated_time" content="2018-05-20T16:38:00&#43;08:00"/>
     
 
 
@@ -210,19 +211,18 @@
 
 
 
-
-    
 
 
 
 
      <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="23"/>
-<meta name="twitter:description" content="22222"/>
+<meta name="twitter:title" content="Algorithm"/>
+<meta name="twitter:description" content=""/>
 
 
     
     
+    <link rel="alternate" type="application/rss+xml" href="https://fd3kyt.github.io/categories/algorithm/index.xml" title="RSS for fd3kyt's blog" />
     
     
     
@@ -261,169 +261,188 @@
                     </div>
                 </header>
 
-                
+                             
 
 
-
-
-
-<article class="post h-entry posts">
+<section class="h-feed">
     <header>
         
-        <div class="center">
+
+
+    
+    <div class="all-terms right no-text-decoration">
+        
+            
+            
+            
+            
+            
+            
+                
+                    
+                    <span class="categories"><a href="https://fd3kyt.github.io/categories/">all <span class="term">categories</span></a></span>
+                    
+                
+            
+        
+            
+            
+            
+            
+            
+            
+                
+                    
+                    <span class="tags"> | <a href="https://fd3kyt.github.io/tags/">all <span class="term">tags</span></a></span>
+                    
+                
+            
+        
+    </div>
+    <div class="clear-float"></div>
+
+
+
+        
+        <data class="u-url" value="https://fd3kyt.github.io/categories/algorithm/"></data>
+        
+
+
+
+
+        
+        
+        
+        
+        <h1 class="p-name">Posts categorized in ‘algorithm’ (1)</h1>
+    </header>
+
+    
+        
+        <article class="summary h-entry posts">
+    <header>
+        <h2 class="post-title p-name no-text-decoration"><a class="u-url" href='https://fd3kyt.github.io/posts/building-a-heap/'> Building a heap</a> </h2>
+        
     <div class="taxo no-text-decoration">
          
             
+                <ul class="no-bullets inline categories">
+                    
+                        
+                        
+                        
+                            
+                            
+                            
+                            
+                            
+                            <li class="active"
+                                
+                                
+                                title="This is the only post categorized in ‘algorithm’"
+                                
+                            >
+                                <a class="p-category" href="https://fd3kyt.github.io/categories/algorithm/">algorithm</a>
+                            </li>
+                        
+                    
+                </ul>
+            
          
             
         
     </div>
 
-</div>
-
-        <h1 class="post-title p-name">23</h1>
 
         
-        <data class="u-url" value="https://fd3kyt.github.io/posts/2223/"></data>
-
-        <div class="date-syndication">
-            
 
 
-
-            
-
-
-        </div>
-
+    
+    
+    <div class="post-date">
+        
+        <time datetime="2018-05-20T16:38:00+0800" class="dt-published">Sun May 20, 2018</time>
         
             
-            <script src="https://fd3kyt.github.io/js/libs/jquery/3.3.1/jquery.slim.min.js"></script>
-<script>(function() {
-     var $toc = $('#TableOfContents');
-     if ($toc.length > 0) {
-         var $window = $(window);
-         function onScroll(){
-             var currentScroll = $window.scrollTop();
-             var h = $('.content h1, .content h2, .content h3, .content h4, .content h5, .content h6, .h-feed h2');
-             var id = "";
-             h.each(function (i, e) {
-                 e = $(e);
-                 if (e.offset().top - 10 <= currentScroll) {
-                     id = e.attr('id');
-                 }
-             });
-             var current = $toc.find('a.current');
-             if (current.length == 1 && current.eq(0).attr('href') == '#' + id) return true;
-
-             current.each(function (i, e) {
-                 $(e).removeClass('current').siblings('ul').hide();
-             });
-             $toc.find('a[href="#' + id + '"]').parentsUntil('#TableOfContents').each(function (i, e) {
-                 $(e).children('a').addClass('current').siblings('ul').show();
-             });
-         }
-         $window.on('scroll', onScroll);
-         $(document).ready(function() {
-             $toc.find('a').parent('li').find('ul').hide();
-             onScroll();
-             document.getElementsByClassName('toc')[0].style.display = '';
-         });}})();</script>
-
-
-
+            <span class="dt-updated">(Updated on Sun May 20, 2018)</span>
         
+    </div>
+
+
     </header>
 
-    <div class="content">
-        
-
-        
-
-
-
-
-
-                       
-
-
-        
-
-
-
-
-        <div class="e-content">
-            <p>22222</p>
-
-
-        </div>
+    <div class="post p-summary" >
+        <p>Given an array with n elements, there are two ways to build a heap on it:
+ Top-down Bottom-up  The top-down approach The first way is quite straightforward. We just do n insertions.
+def build_heap_in_place(l): for i in range(len(l)): sift_up(l, i) The part in [0, i) is the heap we have built so far. l[i] is the new element inserted.
+  This approach runs in O(n*log(n)) time.</p>
     </div>
+
+    
+    
+    
+        <div class="readmore no-text-decoration">
+            <a href='https://fd3kyt.github.io/posts/building-a-heap/'
+               title="Read more about Building a heap">
+                read <span class="more"> more</span>
+                <span class="screen-readers-only" > about Building a heap</span>
+            </a>
+        </div>
+    
 </article>
+
+    
+
+    
+
+
+    
+    <div class="all-terms right no-text-decoration">
+        
+            
+            
+            
+            
+            
+            
+                
+                    
+                    <span class="categories"><a href="https://fd3kyt.github.io/categories/">all <span class="term">categories</span></a></span>
+                    
+                
+            
+        
+            
+            
+            
+            
+            
+            
+                
+                    
+                    <span class="tags"> | <a href="https://fd3kyt.github.io/tags/">all <span class="term">tags</span></a></span>
+                    
+                
+            
+        
+    </div>
+    <div class="clear-float"></div>
+
+
+</section>
 
 
 
                 <footer>
                     
-
-
-
-
-
-<div class="right">
-    <div class="taxo no-text-decoration">
-         
-            
-         
-            
-        
-    </div>
-
-</div>
-<div class="clear-float"></div>
-
-
-
-<div class="prev-next-navigator clear-float">
-    
-        <span class="prev-post left no-text-decoration">
-            <a href="https://fd3kyt.github.io/posts/22223/" class="nobr">« 223</a>
-        </span>
-    
-    
-        <span class="next-post right no-text-decoration">
-            <a href="https://fd3kyt.github.io/posts/333/" class="nobr">3 »</a>
-        </span>
-    
-</div>
-
-
-
-
-
-
-
-
-
-
-
-                       
-
-
-
-<div id="disqus_thread"></div>
-<script>
-  (function() {
-  var d = document, s = d.createElement('script');
-  s.src = 'https://larnsce.disqus.com/embed.js';
-  s.setAttribute('data-timestamp', +new Date());
-  (d.head || d.body).appendChild(s);
-  })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-
-
                     <ul class="no-bullets feed right inline">
+    
+        
+        
+            <li class="inline no-text-decoration">
+                <a href="https://fd3kyt.github.io/categories/algorithm/index.xml">RSS</a>
+            </li>
+        
     
 </ul>
 <div class="clear-float"></div>
