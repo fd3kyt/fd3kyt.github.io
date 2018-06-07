@@ -204,7 +204,7 @@ note  based on the source code of Linux Kernel v4.16 suppose that readers know a
         <meta property="article:published_time" content="2018-05-27T00:00:00&#43;08:00"/>
     
     
-        <meta property="article:modified_time" content="2018-06-07T10:42:28&#43;08:00"/>
+        <meta property="article:modified_time" content="2018-06-07T10:56:46&#43;08:00"/>
     
 
 
@@ -351,8 +351,6 @@ note  based on the source code of Linux Kernel v4.16 suppose that readers know a
 <li><a href="#implementing-the-poll-operation">implementing the <code>poll</code> operation</a></li>
 <li><a href="#about-the-event-mask">about the event mask</a>
 <ul>
-<li><a href="#old-note">old note</a></li>
-<li><a href="#another-example-of-poll-batadv-socket-poll">another example of poll batadv_socket_poll</a></li>
 <li><a href="#useful-example-socket-poll">useful example: socket poll</a></li>
 </ul></li>
 <li><a href="#summary">Summary</a></li>
@@ -374,7 +372,6 @@ note  based on the source code of Linux Kernel v4.16 suppose that readers know a
 <ul>
 <li><a href="#the-red-black-tree-in-eventpoll">the red-black tree in <code>eventpoll</code></a></li>
 </ul></li>
-<li><a href="#main-data-structure"><span class="todo TODO_">TODO </span> main data structure</a></li>
 <li><a href="#epoll-ctl--epoll-ctl-add">epoll_ctl(EPOLL_CTL_ADD)</a>
 <ul>
 <li><a href="#ep-item-poll"><code>ep_item_poll</code></a></li>
@@ -644,10 +641,6 @@ an example how it is used.</p>
 </code></pre></div>
 <p>Here, we use the <code>_key</code> on the <code>poll_table</code>, checking for
 <code>POLL_BUSY_LOOP</code>. If feasible, do a busy loop.</p>
-
-<h5 id="old-note">old note&nbsp;<a class="headline-hash no-text-decoration" href="#old-note">#</a> </h5>
-
-<h5 id="another-example-of-poll-batadv-socket-poll">another example of poll batadv_socket_poll&nbsp;<a class="headline-hash no-text-decoration" href="#another-example-of-poll-batadv-socket-poll">#</a> </h5>
 
 <h5 id="useful-example-socket-poll">useful example: socket poll&nbsp;<a class="headline-hash no-text-decoration" href="#useful-example-socket-poll">#</a> </h5>
 
@@ -1221,8 +1214,6 @@ O(log(n)).</p>
 <p>This RBT is mainly used by <code>epoll_ctl</code> and other management
 functions. Getting the ready events and <code>epoll_wait</code> use other data
 structures instead of this RBT.</p>
-
-<h3 id="main-data-structure"><span class="todo TODO_">TODO </span> main data structure&nbsp;<a class="headline-hash no-text-decoration" href="#main-data-structure">#</a> </h3>
 
 <h3 id="epoll-ctl--epoll-ctl-add">epoll_ctl(EPOLL_CTL_ADD)&nbsp;<a class="headline-hash no-text-decoration" href="#epoll-ctl--epoll-ctl-add">#</a> </h3>
 
