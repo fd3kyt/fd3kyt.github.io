@@ -1,0 +1,2776 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+
+    <head>
+    <link href="https://gmpg.org/xfn/11" rel="profile">
+    <meta charset="utf-8">
+    
+    
+    
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
+
+    
+    <meta name="referrer" content="no-referrer">
+
+    <title>
+        
+            Implementation of Epoll ❚ fd3kyt&#39;s blog
+        
+    </title>
+
+    
+    
+
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    <style>
+     
+     
+     :root {
+         --theme-color: #6a9fb5;
+         --theme-color-light: rgba(106, 159, 181, 0.2);
+     }
+     
+     html {
+         line-height: 1.5;
+     }
+     @media (min-width: 38em) {
+         html {
+             font-size: 20px;
+         }
+     }
+    </style>
+
+    
+    
+
+    
+    
+    
+    
+    
+    <link rel="stylesheet" href="https://fd3kyt.github.io/css/refined.css">
+
+    
+
+
+
+    
+        <style>
+         
+         /* Background */ .chroma { background-color: #ffffff }
+/* Error */ .chroma .err { color: #a61717; background-color: #e3d2d2 }
+/* LineTableTD */ .chroma .lntd { ; vertical-align: top; padding: 0; margin: 0; border: 0; }
+/* LineTable */ .chroma .lntable { ; border-spacing: 0; padding: 0; margin: 0; border: 0; width: 100%; overflow: auto; display: block; }
+/* LineHighlight */ .chroma .hl { background-color: #ffffcc; display: block; width: 100% }
+/* LineNumbersTable */ .chroma .lnt { ; margin-right: 0.4em; padding: 0 0.4em 0 0.4em; display: block; }
+/* LineNumbers */ .chroma .ln { ; margin-right: 0.4em; padding: 0 0.4em 0 0.4em; }
+/* Keyword */ .chroma .k { color: #000000; font-weight: bold }
+/* KeywordConstant */ .chroma .kc { color: #000000; font-weight: bold }
+/* KeywordDeclaration */ .chroma .kd { color: #000000; font-weight: bold }
+/* KeywordNamespace */ .chroma .kn { color: #000000; font-weight: bold }
+/* KeywordPseudo */ .chroma .kp { color: #000000; font-weight: bold }
+/* KeywordReserved */ .chroma .kr { color: #000000; font-weight: bold }
+/* KeywordType */ .chroma .kt { color: #445588; font-weight: bold }
+/* NameAttribute */ .chroma .na { color: #008080 }
+/* NameBuiltin */ .chroma .nb { color: #0086b3 }
+/* NameBuiltinPseudo */ .chroma .bp { color: #999999 }
+/* NameClass */ .chroma .nc { color: #445588; font-weight: bold }
+/* NameConstant */ .chroma .no { color: #008080 }
+/* NameDecorator */ .chroma .nd { color: #3c5d5d; font-weight: bold }
+/* NameEntity */ .chroma .ni { color: #800080 }
+/* NameException */ .chroma .ne { color: #990000; font-weight: bold }
+/* NameFunction */ .chroma .nf { color: #990000; font-weight: bold }
+/* NameLabel */ .chroma .nl { color: #990000; font-weight: bold }
+/* NameNamespace */ .chroma .nn { color: #555555 }
+/* NameTag */ .chroma .nt { color: #000080 }
+/* NameVariable */ .chroma .nv { color: #008080 }
+/* NameVariableClass */ .chroma .vc { color: #008080 }
+/* NameVariableGlobal */ .chroma .vg { color: #008080 }
+/* NameVariableInstance */ .chroma .vi { color: #008080 }
+/* LiteralString */ .chroma .s { color: #dd1144 }
+/* LiteralStringAffix */ .chroma .sa { color: #dd1144 }
+/* LiteralStringBacktick */ .chroma .sb { color: #dd1144 }
+/* LiteralStringChar */ .chroma .sc { color: #dd1144 }
+/* LiteralStringDelimiter */ .chroma .dl { color: #dd1144 }
+/* LiteralStringDoc */ .chroma .sd { color: #dd1144 }
+/* LiteralStringDouble */ .chroma .s2 { color: #dd1144 }
+/* LiteralStringEscape */ .chroma .se { color: #dd1144 }
+/* LiteralStringHeredoc */ .chroma .sh { color: #dd1144 }
+/* LiteralStringInterpol */ .chroma .si { color: #dd1144 }
+/* LiteralStringOther */ .chroma .sx { color: #dd1144 }
+/* LiteralStringRegex */ .chroma .sr { color: #009926 }
+/* LiteralStringSingle */ .chroma .s1 { color: #dd1144 }
+/* LiteralStringSymbol */ .chroma .ss { color: #990073 }
+/* LiteralNumber */ .chroma .m { color: #009999 }
+/* LiteralNumberBin */ .chroma .mb { color: #009999 }
+/* LiteralNumberFloat */ .chroma .mf { color: #009999 }
+/* LiteralNumberHex */ .chroma .mh { color: #009999 }
+/* LiteralNumberInteger */ .chroma .mi { color: #009999 }
+/* LiteralNumberIntegerLong */ .chroma .il { color: #009999 }
+/* LiteralNumberOct */ .chroma .mo { color: #009999 }
+/* Operator */ .chroma .o { color: #000000; font-weight: bold }
+/* OperatorWord */ .chroma .ow { color: #000000; font-weight: bold }
+/* Comment */ .chroma .c { color: #999988; font-style: italic }
+/* CommentHashbang */ .chroma .ch { color: #999988; font-style: italic }
+/* CommentMultiline */ .chroma .cm { color: #999988; font-style: italic }
+/* CommentSingle */ .chroma .c1 { color: #999988; font-style: italic }
+/* CommentSpecial */ .chroma .cs { color: #999999; font-weight: bold; font-style: italic }
+/* CommentPreproc */ .chroma .cp { color: #999999; font-weight: bold; font-style: italic }
+/* CommentPreprocFile */ .chroma .cpf { color: #999999; font-weight: bold; font-style: italic }
+/* GenericDeleted */ .chroma .gd { color: #000000; background-color: #ffdddd }
+/* GenericEmph */ .chroma .ge { color: #000000; font-style: italic }
+/* GenericError */ .chroma .gr { color: #aa0000 }
+/* GenericHeading */ .chroma .gh { color: #999999 }
+/* GenericInserted */ .chroma .gi { color: #000000; background-color: #ddffdd }
+/* GenericOutput */ .chroma .go { color: #888888 }
+/* GenericPrompt */ .chroma .gp { color: #555555 }
+/* GenericStrong */ .chroma .gs { font-weight: bold }
+/* GenericSubheading */ .chroma .gu { color: #aaaaaa }
+/* GenericTraceback */ .chroma .gt { color: #aa0000 }
+/* TextWhitespace */ .chroma .w { color: #bbbbbb }
+
+         
+         /* Overrides on top of the theme and Chroma CSS */
+/* Chroma-based lines highlighting in code blocks */
+.chroma .hl {
+    background-color: #e8e8e8;
+    /* Extend highlight up to 100 characters (assuming that the code blocks never have more than 100 characters in a line) */
+    min-width: 100ch;
+}
+
+         
+        </style>
+    
+
+    
+
+    
+    
+    
+
+    <script src="https://fd3kyt.github.io/js/responsive-nav-orig.js"></script>
+
+    
+    <script defer src="https://fd3kyt.github.io/js/libs/fa/fontawesome-all.js"></script>
+
+    
+
+    
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="https://fd3kyt.github.io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://fd3kyt.github.io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://fd3kyt.github.io/favicon-16x16.png">
+    <link rel="manifest" href="https://fd3kyt.github.io/manifest.json">
+    <link rel="mask-icon" href="https://fd3kyt.github.io/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#ffc40d" />
+    <meta name="theme-color" content="#ffffff" />
+
+    
+    
+<!-- rel="me" links for IndieAuth -->
+
+
+
+
+
+
+
+    
+ 
+<meta property="og:title" content="Implementation of Epoll" />
+<meta property="og:description"
+      content="There are many articles about the usage and/or implementation of epoll on the web now. However, I think that some straightforward summary I want and some details that I am interested in are still missing. So I write this post.
+note  based on the source code of Linux Kernel v4.16 suppose that readers know about the usage of epoll.    prerequisite poll() operation of file A file operation, poll(), is needed for the implementation of select/poll/epoll." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://fd3kyt.github.io/posts/implementation-of-epoll/" />
+
+
+    
+        <meta property="article:published_time" content="2018-05-27T00:00:00&#43;08:00"/>
+    
+    
+        <meta property="article:modified_time" content="2018-06-07T10:42:28&#43;08:00"/>
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+     <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Implementation of Epoll"/>
+<meta name="twitter:description" content="There are many articles about the usage and/or implementation of epoll on the web now. However, I think that some straightforward summary I want and some details that I am interested in are still missing. So I write this post.
+note  based on the source code of Linux Kernel v4.16 suppose that readers know about the usage of epoll.    prerequisite poll() operation of file A file operation, poll(), is needed for the implementation of select/poll/epoll."/>
+
+
+    
+    
+    
+    
+    
+    <meta name="hugo-build-date" content="2018-05-09T07:46:33Z"/>
+    <meta name="hugo-commit-hash" content=""/>
+    <meta name="generator" content="Hugo 0.40.3" />
+</head>
+
+
+    <body lang="en">
+
+        
+        <div class="border" id="home"></div>
+
+        <div class="wrapper">   
+            
+<nav id="nav" class="nav-collapse opened" aria-hidden="false">
+    <ul class="navbar">
+        <li><a class="" href="https://fd3kyt.github.io/">Home</a></li>
+        
+            
+                <li><a class="" href="https://fd3kyt.github.io/posts/">Posts</a></li>
+            
+        
+        
+    </ul>
+</nav>
+
+            <div class="container">
+                <header class="masthead">
+                    <div class="masthead-title no-text-decoration">
+                        <a href="https://fd3kyt.github.io/">fd3kyt&#39;s blog</a> <span class="blinking-cursor">❚</span>
+                    </div>
+                    <div class="masthead-tagline">
+                        
+                    </div>
+                </header>
+
+                
+
+
+
+
+
+<article class="post h-entry posts">
+    <header>
+        
+        <div class="center">
+    <div class="taxo no-text-decoration">
+         
+            
+                <ul class="no-bullets inline categories">
+                    
+                        
+                        
+                        
+                            
+                            
+                            
+                            
+                            
+                            <li class="__linux__"
+                                
+                                
+                                title="This is the only post categorized in ‘linux’"
+                                
+                            >
+                                <a class="p-category" href="https://fd3kyt.github.io/categories/linux/">linux</a>
+                            </li>
+                        
+                    
+                </ul>
+            
+         
+            
+        
+    </div>
+
+</div>
+
+        <h1 class="post-title p-name">Implementation of Epoll</h1>
+
+        
+        <data class="u-url" value="https://fd3kyt.github.io/posts/implementation-of-epoll/"></data>
+
+        <div class="date-syndication">
+            
+
+
+    
+    
+    <div class="post-date">
+        
+        <time datetime="2018-05-27T00:00:00+0800" class="dt-published">Sun May 27, 2018</time>
+        
+            
+            <span class="dt-updated">(Updated on Thu Jun 7, 2018)</span>
+        
+    </div>
+
+
+            
+
+
+        </div>
+
+        
+            
+                <div class="toc">
+                    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#note">note</a></li>
+<li><a href="#prerequisite">prerequisite</a>
+<ul>
+<li><a href="#poll-operation-of-file">poll() operation of file</a>
+<ul>
+<li><a href="#poll-table-struct">poll_table_struct</a></li>
+<li><a href="#implementing-the-poll-operation">implementing the <code>poll</code> operation</a></li>
+<li><a href="#about-the-event-mask">about the event mask</a>
+<ul>
+<li><a href="#old-note">old note</a></li>
+<li><a href="#another-example-of-poll-batadv-socket-poll">another example of poll batadv_socket_poll</a></li>
+<li><a href="#useful-example-socket-poll">useful example: socket poll</a></li>
+</ul></li>
+<li><a href="#summary">Summary</a></li>
+</ul></li>
+<li><a href="#list-and-queue-in-the-kernel">list and queue in the Kernel</a>
+<ul>
+<li><a href="#embedded-anchor">embedded anchor</a>
+<ul>
+<li><a href="#add-add_tail-delete-contains-all-in-O-1-">add, add_tail, delete, contains, all in O(1)</a></li>
+<li><a href="#pros-and-cons-of-embedded-anchor">pros and cons of embedded anchor</a></li>
+</ul></li>
+<li><a href="#embed-struct-to-store-more-data">embedded original struct into another struct to pass more data</a></li>
+</ul></li>
+<li><a href="#wait-queue-in-the-kernel">wait queue in the Kernel</a></li>
+</ul></li>
+<li><a href="#implementation">implementation</a>
+<ul>
+<li><a href="#epoll-create">epoll_create</a>
+<ul>
+<li><a href="#the-red-black-tree-in-eventpoll">the red-black tree in <code>eventpoll</code></a></li>
+</ul></li>
+<li><a href="#main-data-structure"><span class="todo TODO_">TODO </span> main data structure</a></li>
+<li><a href="#epoll-ctl--epoll-ctl-add">epoll_ctl(EPOLL_CTL_ADD)</a>
+<ul>
+<li><a href="#ep-item-poll"><code>ep_item_poll</code></a></li>
+<li><a href="#ep-ptable-queue-proc-dot"><code>ep_ptable_queue_proc</code>.</a>
+<ul>
+<li><a href="#epitem-dot-pwqlist"><code>epitem.pwqlist</code></a></li>
+</ul></li>
+<li><a href="#eppoll-entry"><code>eppoll_entry</code></a></li>
+<li><a href="#summary-of-epoll-ctl-add">summary of EPOLL_CTL_ADD</a></li>
+</ul></li>
+<li><a href="#a-few-words-about-the-event-mask">a few words about the event mask</a></li>
+<li><a href="#when-are-the-queues-activated">when are the queues activated?</a>
+<ul>
+<li><a href="#drilling-into-the-code">drilling into the code</a></li>
+<li><a href="#why-does-it-matter">why does it matter?</a></li>
+</ul></li>
+<li><a href="#collecting-ready-events">collecting ready events</a></li>
+<li><a href="#ep-poll-callback">ep_poll_callback</a>
+<ul>
+<li><a href="#arguments-of-ep-poll-callback">arguments of <code>ep_poll_callback</code></a></li>
+<li><a href="#ep-poll-callback-step-by-step"><code>ep_poll_callback</code>,step by step</a></li>
+<li><a href="#summary-of-ep-poll-callback">summary of <code>ep_poll_callback</code></a></li>
+</ul></li>
+<li><a href="#epoll-wait">epoll_wait</a>
+<ul>
+<li><a href="#main-functions-used-in-epoll-wait">main functions used in <code>epoll_wait</code></a></li>
+<li><a href="#ep-poll"><code>ep_poll</code></a>
+<ul>
+<li><a href="#summary-of-ep-poll">summary of <code>ep_poll</code></a></li>
+</ul></li>
+<li><a href="#ep-scan-ready-list"><code>ep_scan_ready_list</code></a>
+<ul>
+<li><a href="#behavior-of-ovflist">behavior of <code>ovflist</code></a></li>
+<li><a href="#summary-of-ep-scan-ready-list">summary of <code>ep_scan_ready_list</code></a></li>
+</ul></li>
+<li><a href="#ep-send-events-proc"><code>ep_send_events_proc</code></a>
+<ul>
+<li><a href="#lt-over-et">LT over ET</a></li>
+</ul></li>
+<li><a href="#summary-of-epoll-wait">summary of <code>epoll_wait</code></a></li>
+</ul></li>
+</ul></li>
+<li><a href="#more">more</a>
+<ul>
+<li><a href="#lock-in-epoll">lock in epoll</a>
+<ul>
+<li><a href="#epmutex"><code>epmutex</code></a></li>
+<li><a href="#ep-mtx"><code>ep-&gt;mtx</code></a></li>
+<li><a href="#ep-lock"><code>ep-&gt;lock</code></a>
+<ul>
+<li><a href="#ep-ovflist"><code>ep-&gt;ovflist</code></a>
+<ul>
+<li><a href="#why-ovflist-is-necessary">why <code>ovflist</code> is necessary?</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><a href="#epoll-ctl-mod-ep-modify">EPOLL_CTL_MOD, ep_modify</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    <a href="#top" class="back-to-top">Back to top</a>
+                </div>
+            
+            <script src="https://fd3kyt.github.io/js/libs/jquery/3.3.1/jquery.slim.min.js"></script>
+<script>(function() {
+     var $toc = $('#TableOfContents');
+     if ($toc.length > 0) {
+         var $window = $(window);
+         function onScroll(){
+             var currentScroll = $window.scrollTop();
+             var h = $('.content h1, .content h2, .content h3, .content h4, .content h5, .content h6, .h-feed h2');
+             var id = "";
+             h.each(function (i, e) {
+                 e = $(e);
+                 if (e.offset().top - 10 <= currentScroll) {
+                     id = e.attr('id');
+                 }
+             });
+             var current = $toc.find('a.current');
+             if (current.length == 1 && current.eq(0).attr('href') == '#' + id) return true;
+
+             current.each(function (i, e) {
+                 $(e).removeClass('current').siblings('ul').hide();
+             });
+             $toc.find('a[href="#' + id + '"]').parentsUntil('#TableOfContents').each(function (i, e) {
+                 $(e).children('a').addClass('current').siblings('ul').show();
+             });
+         }
+         $window.on('scroll', onScroll);
+         $(document).ready(function() {
+             $toc.find('a').parent('li').find('ul').hide();
+             onScroll();
+             document.getElementsByClassName('toc')[0].style.display = '';
+         });}})();</script>
+
+
+
+        
+    </header>
+
+    <div class="content">
+        
+
+        
+
+
+
+
+
+                       
+
+
+        
+
+
+
+
+        <div class="e-content">
+            
+
+<p>There are many articles about the usage and/or implementation of epoll
+on the web now. However, I think that some straightforward summary I
+want and some details that I am interested in are still missing. So I
+write this post.</p>
+
+<h2 id="note">note&nbsp;<a class="headline-hash no-text-decoration" href="#note">#</a> </h2>
+
+<ul>
+<li>based on the source code of Linux Kernel v4.16</li>
+<li>suppose that readers know about the usage of epoll.</li>
+</ul>
+
+
+
+
+
+<figure>
+    
+         
+            
+            
+            <img src="https://fd3kyt.github.io/ox-hugo/screenshot_2018-05-27_11-48-53.png"
+        
+             alt="/ox-hugo/screenshot_2018-05-27_11-48-53.png"/>
+        
+        
+</figure>
+
+
+<h2 id="prerequisite">prerequisite&nbsp;<a class="headline-hash no-text-decoration" href="#prerequisite">#</a> </h2>
+
+<h3 id="poll-operation-of-file">poll() operation of file&nbsp;<a class="headline-hash no-text-decoration" href="#poll-operation-of-file">#</a> </h3>
+
+<p>A file operation, <code>poll()</code>, is needed for the implementation of
+select/poll/epoll.<sup class="footnote-ref" id="fnref:fn-1"><a href="#fn:fn-1">1</a></sup></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// linux/fs.h
+</span><span class="c1"></span><span class="k">struct</span> <span class="n">file_operations</span> <span class="p">{</span>
+    <span class="c1">// ... omitted
+</span><span class="c1"></span>    <span class="n">__poll_t</span> <span class="p">(</span><span class="o">*</span><span class="n">poll</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="p">,</span> <span class="k">struct</span> <span class="n">poll_table_struct</span> <span class="o">*</span><span class="p">);</span>
+    <span class="c1">// ... omitted
+</span><span class="c1"></span><span class="p">};</span>
+</code></pre></div>
+<p>What does this operation do? In general, this operation is for
+monitoring the &ldquo;readiness&rdquo; of the operations like <code>read</code> and <code>write</code>
+on this file.</p>
+
+<p>It is supposed to do two things:</p>
+
+<ol>
+<li>Expose the queue(s) related to &ldquo;readiness&rdquo; inside this file: call
+the callback wrapped inside <code>poll_table_struct</code> with each queue</li>
+<li>Return a bitmask indicating current &ldquo;readiness&rdquo;, similar to the
+<code>(struct epoll_event).events</code>.</li>
+</ol>
+
+<h4 id="poll-table-struct">poll_table_struct&nbsp;<a class="headline-hash no-text-decoration" href="#poll-table-struct">#</a> </h4>
+
+<p>Let&rsquo;s take a look at <code>poll_table_struct</code> first. It is a function
+pointer + a bitmask indicating the events we are interested in.<sup class="footnote-ref" id="fnref:fn-2"><a href="#fn:fn-2">2</a></sup></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/*
+</span><span class="cm"> * structures and helpers for f_op-&gt;poll implementations
+</span><span class="cm"> */</span>
+<span class="k">typedef</span> <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">poll_queue_proc</span><span class="p">)(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="p">,</span> <span class="n">wait_queue_head_t</span> <span class="o">*</span><span class="p">,</span> <span class="k">struct</span> <span class="n">poll_table_struct</span> <span class="o">*</span><span class="p">);</span>
+
+<span class="cm">/*
+</span><span class="cm"> * Do not touch the structure directly, use the access functions
+</span><span class="cm"> * poll_does_not_wait() and poll_requested_events() instead.
+</span><span class="cm"> */</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">poll_table_struct</span> <span class="p">{</span>
+        <span class="n">poll_queue_proc</span> <span class="n">_qproc</span><span class="p">;</span>
+        <span class="n">__poll_t</span> <span class="n">_key</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">poll_table</span><span class="p">;</span>
+
+<span class="k">typedef</span> <span class="kt">unsigned</span> <span class="n">__bitwise</span> <span class="n">__poll_t</span><span class="p">;</span>    <span class="c1">// types.h
+</span><span class="c1"></span></code></pre></div>
+<h4 id="implementing-the-poll-operation">implementing the <code>poll</code> operation&nbsp;<a class="headline-hash no-text-decoration" href="#implementing-the-poll-operation">#</a> </h4>
+
+<p>Each device need to implement this operation on their own, because its
+logic depends on the device. But usually, it is quite simple.</p>
+
+<ol>
+<li>for every related queue, call a function <code>poll_wait</code> provided by
+the kernel, passing the queue and the argument <code>poll_table_struct</code>
+to it.</li>
+<li>set the bitmask and return it.</li>
+</ol>
+
+<p>Here is an example from LDD3<sup class="footnote-ref" id="fnref:fn-3"><a href="#fn:fn-3">3</a></sup>: the implementation of <code>poll</code> for a
+device named <code>scullpipe</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">static</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="nf">scull_p_poll</span><span class="p">(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="n">filp</span><span class="p">,</span> <span class="n">poll_table</span> <span class="o">*</span><span class="n">wait</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">scull_pipe</span> <span class="o">*</span><span class="n">dev</span> <span class="o">=</span> <span class="n">filp</span><span class="o">-&gt;</span><span class="n">private_data</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">mask</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="n">down</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">sem</span><span class="p">);</span>
+    <span class="c1">// call poll_wait on every related queue
+</span><span class="c1"></span>    <span class="n">poll_wait</span><span class="p">(</span><span class="n">filp</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">inq</span><span class="p">,</span> <span class="n">wait</span><span class="p">);</span>
+    <span class="n">poll_wait</span><span class="p">(</span><span class="n">filp</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">outq</span><span class="p">,</span> <span class="n">wait</span><span class="p">);</span>
+    <span class="c1">// set the mask
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">rp</span> <span class="o">!=</span> <span class="n">dev</span><span class="o">-&gt;</span><span class="n">wp</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">|=</span> <span class="n">POLLIN</span> <span class="o">|</span> <span class="n">POLLRDNORM</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">spacefree</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span>
+        <span class="n">mask</span> <span class="o">|=</span> <span class="n">POLLOUT</span> <span class="o">|</span> <span class="n">POLLWRNORM</span><span class="p">;</span>
+    <span class="n">up</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">sem</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">mask</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>poll_wait</code> is a very simple function. It just call the callback in
+<code>poll_table</code> if feasible.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">poll_wait</span><span class="p">(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span> <span class="n">filp</span><span class="p">,</span> <span class="n">wait_queue_head_t</span> <span class="o">*</span> <span class="n">wait_address</span><span class="p">,</span> <span class="n">poll_table</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">&amp;&amp;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">_qproc</span> <span class="o">&amp;&amp;</span> <span class="n">wait_address</span><span class="p">)</span>
+                <span class="n">p</span><span class="o">-&gt;</span><span class="n">_qproc</span><span class="p">(</span><span class="n">filp</span><span class="p">,</span> <span class="n">wait_address</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="about-the-event-mask">about the event mask&nbsp;<a class="headline-hash no-text-decoration" href="#about-the-event-mask">#</a> </h4>
+
+<p><code>poll_table._key</code> is the mask of the poll operation, similar to the
+event mask in epoll.</p>
+
+<p>In the previous example <code>scull_p_poll</code>, this mask is not used. Here is
+an example how it is used.</p>
+
+<p>The poll operation for socket:<sup class="footnote-ref" id="fnref:fn-4"><a href="#fn:fn-4">4</a></sup></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">static</span> <span class="n">__poll_t</span> <span class="nf">sock_poll</span><span class="p">(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="n">poll_table</span> <span class="o">*</span><span class="n">wait</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="n">__poll_t</span> <span class="n">busy_flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">struct</span> <span class="n">socket</span> <span class="o">*</span><span class="n">sock</span><span class="p">;</span>
+
+        <span class="cm">/*
+</span><span class="cm">         *      We can&#39;t return errors to poll, so it&#39;s either yes or no.
+</span><span class="cm">         */</span>
+        <span class="n">sock</span> <span class="o">=</span> <span class="n">file</span><span class="o">-&gt;</span><span class="n">private_data</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">sk_can_busy_loop</span><span class="p">(</span><span class="n">sock</span><span class="o">-&gt;</span><span class="n">sk</span><span class="p">))</span> <span class="p">{</span>
+                <span class="cm">/* this socket can poll_ll so tell the system call */</span>
+                <span class="n">busy_flag</span> <span class="o">=</span> <span class="n">POLL_BUSY_LOOP</span><span class="p">;</span>
+
+                <span class="cm">/* once, only if requested by syscall */</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">wait</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">wait</span><span class="o">-&gt;</span><span class="n">_key</span> <span class="o">&amp;</span> <span class="n">POLL_BUSY_LOOP</span><span class="p">))</span>
+                        <span class="n">sk_busy_loop</span><span class="p">(</span><span class="n">sock</span><span class="o">-&gt;</span><span class="n">sk</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">busy_flag</span> <span class="o">|</span> <span class="n">sock</span><span class="o">-&gt;</span><span class="n">ops</span><span class="o">-&gt;</span><span class="n">poll</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">sock</span><span class="p">,</span> <span class="n">wait</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Here, we use the <code>_key</code> on the <code>poll_table</code>, checking for
+<code>POLL_BUSY_LOOP</code>. If feasible, do a busy loop.</p>
+
+<h5 id="old-note">old note&nbsp;<a class="headline-hash no-text-decoration" href="#old-note">#</a> </h5>
+
+<h5 id="another-example-of-poll-batadv-socket-poll">another example of poll batadv_socket_poll&nbsp;<a class="headline-hash no-text-decoration" href="#another-example-of-poll-batadv-socket-poll">#</a> </h5>
+
+<h5 id="useful-example-socket-poll">useful example: socket poll&nbsp;<a class="headline-hash no-text-decoration" href="#useful-example-socket-poll">#</a> </h5>
+
+<p>net/socket.c<sup class="footnote-ref" id="fnref:fn-5"><a href="#fn:fn-5">5</a></sup></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">static</span> <span class="n">__poll_t</span> <span class="nf">sock_poll</span><span class="p">(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="n">poll_table</span> <span class="o">*</span><span class="n">wait</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="n">__poll_t</span> <span class="n">busy_flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">struct</span> <span class="n">socket</span> <span class="o">*</span><span class="n">sock</span><span class="p">;</span>
+
+        <span class="cm">/*
+</span><span class="cm">         *      We can&#39;t return errors to poll, so it&#39;s either yes or no.
+</span><span class="cm">         */</span>
+        <span class="n">sock</span> <span class="o">=</span> <span class="n">file</span><span class="o">-&gt;</span><span class="n">private_data</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">sk_can_busy_loop</span><span class="p">(</span><span class="n">sock</span><span class="o">-&gt;</span><span class="n">sk</span><span class="p">))</span> <span class="p">{</span>
+                <span class="cm">/* this socket can poll_ll so tell the system call */</span>
+                <span class="n">busy_flag</span> <span class="o">=</span> <span class="n">POLL_BUSY_LOOP</span><span class="p">;</span>
+
+                <span class="cm">/* once, only if requested by syscall */</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">wait</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">wait</span><span class="o">-&gt;</span><span class="n">_key</span> <span class="o">&amp;</span> <span class="n">POLL_BUSY_LOOP</span><span class="p">))</span>
+                        <span class="n">sk_busy_loop</span><span class="p">(</span><span class="n">sock</span><span class="o">-&gt;</span><span class="n">sk</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">busy_flag</span> <span class="o">|</span> <span class="n">sock</span><span class="o">-&gt;</span><span class="n">ops</span><span class="o">-&gt;</span><span class="n">poll</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">sock</span><span class="p">,</span> <span class="n">wait</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>This seems to be the top level socket interface. Will dispatch to
+<code>sock-&gt;ops-&gt;poll</code>.</p>
+
+<p>Here, we use the <code>_key</code> on the <code>poll_table</code>, for flag
+<code>POLL_BUSY_LOOP</code>.</p>
+
+<p>So, the mask in <code>poll_table</code> is used.</p>
+
+<h4 id="summary">Summary&nbsp;<a class="headline-hash no-text-decoration" href="#summary">#</a> </h4>
+
+<p>The <code>poll</code> operation of file is supposed to do two things:</p>
+
+<ol>
+<li>call the callback wrapped inside <code>poll_table</code> with each related
+queue</li>
+<li>return a bitmask indicating current readiness.</li>
+</ol>
+
+<h3 id="list-and-queue-in-the-kernel">list and queue in the Kernel&nbsp;<a class="headline-hash no-text-decoration" href="#list-and-queue-in-the-kernel">#</a> </h3>
+
+<p>The idea of epoll is actually quite simple. Most of the complexity in
+the code is to do it in a somehow object-oriented style, in the
+efficient way of kernel.</p>
+
+<p>To understand it, you need to understand how pointer-based data
+structure in the kernel work, e.g. linked list and red-black tree.</p>
+
+<p>For this is a post for epoll, I will use the code of epoll as
+examples.</p>
+
+<h4 id="embedded-anchor">embedded anchor&nbsp;<a class="headline-hash no-text-decoration" href="#embedded-anchor">#</a> </h4>
+
+<p><code>struct epitem</code> is one of the most important data structure in the
+implementation of epoll, representing a file descriptor registered in
+the epoll fd. It contains the <code>epoll_event</code> that we pass in during
+<code>epoll_ctl(EPOLL_CTL_ADD)</code>, a <code>epoll_filefd</code> containing the
+pointer to corresponding <code>file</code> struct, and some other data.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="n">epitem</span><span class="p">{</span>
+    <span class="k">struct</span> <span class="n">epoll_filefd</span> <span class="n">ffd</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">epoll_event</span> <span class="n">event</span><span class="p">;</span>
+    <span class="c1">// here I just want to show how the linked list in the kernel
+</span><span class="c1"></span>    <span class="c1">// work. Many fields omitted.
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div>
+<p><code>struct epollpoll</code> is the data structure representing the epoll
+instance.</p>
+
+<p><code>struct file</code> represents an opened file.</p>
+
+<p>In current implementation, an <code>epitem</code> may be add into several
+containers, including:</p>
+
+<ul>
+<li><code>eventpoll.rbr</code>, a red-black tree of all registered <code>epitem</code></li>
+<li><code>eventpoll.rdllist</code>, a list of <code>epitem</code> of ready file descriptors</li>
+<li><code>file.f_ep_links</code>, a list of all the <code>epitem</code> referencing this
+<code>file</code></li>
+</ul>
+
+<p>Beside, each <code>epitem</code> also has a list on its own: a list of
+<code>eppoll_entry</code>.</p>
+
+
+
+
+
+<figure>
+    
+         
+            
+            
+            <img src="https://fd3kyt.github.io/ox-hugo/screenshot_2018-06-04_17-23-43.png"
+        
+             alt="Figure 1: links on an epitem"/>
+        
+        
+            <figcaption>
+                
+                <p>
+                    Figure 1: links on an epitem
+                    
+                        
+                        </p>
+                
+            </figcaption>
+        
+</figure>
+
+
+<p>In the world outside of the kernel, if we want to maintain a list of
+ready <code>epitem</code> on <code>eventpoll</code>, we simply add a list on <code>eventpoll</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;list&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="k">struct</span> <span class="n">eventpoll</span><span class="p">{</span>
+    <span class="c1">// ... omitted
+</span><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">epitem</span><span class="o">*&gt;</span> <span class="n">rdllist</span><span class="p">;</span>
+    <span class="c1">// ... omitted
+</span><span class="c1"></span><span class="p">};</span>
+
+<span class="kt">void</span> <span class="nf">add_new_epitem</span><span class="p">(</span><span class="n">eventpoll</span><span class="o">*</span> <span class="n">ep</span><span class="p">,</span> <span class="n">epitem</span><span class="o">*</span> <span class="n">epi</span><span class="p">){</span>
+    <span class="n">ep</span><span class="o">-&gt;</span><span class="n">rdllist</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">epi</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Inside the list, there must be nodes similar to this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="n">my_node</span><span class="p">{</span>
+    <span class="n">epitem</span><span class="o">*</span> <span class="n">data</span><span class="p">;</span>
+    <span class="n">my_node</span><span class="o">*</span> <span class="n">prev</span><span class="p">,</span> <span class="n">next</span><span class="p">;</span>                   <span class="c1">// doubly linked
+</span><span class="c1"></span><span class="p">};</span>
+</code></pre></div>
+<p>And when we add an element to the list, we create a new <code>my_node</code>,
+where <code>data</code> is the new pointer to <code>epitem</code>.</p>
+
+<p>But here, in the kernel, we do it differently:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// add a new member &#34;rdllink&#34; in epitem
+</span><span class="c1"></span><span class="k">struct</span> <span class="n">epitem</span><span class="p">{</span>
+    <span class="k">struct</span> <span class="n">epoll_filefd</span> <span class="n">ffd</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">epoll_event</span> <span class="n">event</span><span class="p">;</span>
+
+    <span class="cm">/* List header used to link this item to the &#34;struct file&#34; items list */</span>
+    <span class="k">struct</span> <span class="n">list_head</span> <span class="n">rdllink</span><span class="p">;</span>
+<span class="p">};</span>
+
+
+<span class="c1">// need to add a list in struct eventpoll, of course
+</span><span class="c1"></span><span class="k">struct</span> <span class="n">eventpoll</span><span class="p">{</span>
+    <span class="c1">// ... omitted
+</span><span class="c1"></span>    <span class="k">struct</span> <span class="n">list_head</span>	<span class="n">rdllist</span><span class="p">;</span>
+    <span class="c1">// ... omitted
+</span><span class="c1"></span><span class="p">};</span>
+</code></pre></div>
+<p>Definition of <code>list_head</code><sup class="footnote-ref" id="fnref:fn-6"><a href="#fn:fn-6">6</a></sup>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/**
+</span><span class="cm"> * The linkage struct for list nodes. This struct must be part of your
+</span><span class="cm"> * to-be-linked struct. struct list_head is required for both the head of the
+</span><span class="cm"> * list and for each list node.
+</span><span class="cm"> *
+</span><span class="cm"> * Position and name of the struct list_head field is irrelevant.
+</span><span class="cm"> * There are no requirements that elements of a list are of the same type.
+</span><span class="cm"> * There are no requirements for a list head, any struct list_head can be a list
+</span><span class="cm"> * head.
+</span><span class="cm"> */</span>
+<span class="k">struct</span> <span class="n">list_head</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">list_head</span> <span class="o">*</span><span class="n">next</span><span class="p">,</span> <span class="o">*</span><span class="n">prev</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+
+
+
+
+<figure>
+    
+         
+            
+            
+            <img src="https://fd3kyt.github.io/ox-hugo/screenshot_2018-06-04_17-59-00.png"
+        
+             alt="Figure 2: two ways to link epitem into a list"/>
+        
+        
+            <figcaption>
+                
+                <p>
+                    Figure 2: two ways to link epitem into a list
+                    
+                        
+                        </p>
+                
+            </figcaption>
+        
+</figure>
+
+
+<p>We don&rsquo;t need any new memory when adding an <code>epitem</code> into the list. We
+just need to set <code>epitem.rdllink.next</code> and <code>.prev</code>.</p>
+
+<p>This <code>rdllink</code> can only link its <code>epitem</code> into the <code>rdllist</code> of one
+<code>eventpoll</code>. For example, if an <code>epitem</code> may occur in the <code>rdllist</code> of
+multiple <code>eventpoll</code>, one <code>rdllink</code> per <code>epitem</code> won&rsquo;t do
+it. Fortunately, here <code>epitem</code> and <code>eventpoll</code> have many-to-one
+relationship.</p>
+
+<h5 id="add-add_tail-delete-contains-all-in-O-1-">add, add_tail, delete, contains, all in O(1)&nbsp;<a class="headline-hash no-text-decoration" href="#add-add_tail-delete-contains-all-in-O-1-">#</a> </h5>
+
+<p>Given the head of the list (<code>eventpoll.rdllist</code>) and an <code>epitem</code>, we
+can do both <code>add</code> (to the front) and <code>add_tail</code> in O(1) easily,
+because this is a doubly-linked circular list.</p>
+
+<p>We can also:</p>
+
+<ol>
+<li>tell if the <code>epitem</code> is in the ready list</li>
+<li>remove it from the ready list</li>
+</ol>
+
+<p>both in O(1), and don&rsquo;t even need the head of the ready list. Here is
+a code snippet in <code>ep_remove</code>, which is called during
+<code>epoll_ctl(EPOLL_CTL_DEL)</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">static</span> <span class="kt">int</span> <span class="nf">ep_remove</span><span class="p">(</span><span class="k">struct</span> <span class="n">eventpoll</span> <span class="o">*</span><span class="n">ep</span><span class="p">,</span> <span class="k">struct</span> <span class="n">epitem</span> <span class="o">*</span><span class="n">epi</span><span class="p">){</span>
+    <span class="c1">// omitted
+</span><span class="c1"></span>
+    <span class="c1">// if epi is in the ready list now, delete it from the list
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">ep_is_linked</span><span class="p">(</span><span class="o">&amp;</span><span class="n">epi</span><span class="o">-&gt;</span><span class="n">rdllink</span><span class="p">))</span>
+        <span class="n">list_del_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">epi</span><span class="o">-&gt;</span><span class="n">rdllink</span><span class="p">);</span>
+
+    <span class="c1">// omitted
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div>
+<p>We can do this because, <code>epitem</code> belongs to one <code>eventpoll</code>. This
+<code>epitem</code> is either linked by <code>rdllink</code> into the <code>rdllist</code> of this
+<code>eventpoll</code> or not.</p>
+
+<ul>
+<li><p>In the former case, the pointers in <code>epi-&gt;rdllink</code> pointers to
+adjacent entries in the <code>rdllist</code>.</p>
+
+<ul>
+<li>If we want to delete it, we just need to link the two adjacent
+entries together and reset this entry.</li>
+</ul></li>
+
+<li><p>In the latter case, the pointers in <code>epi-&gt;rdllink</code> point to itself,
+indicating that this <code>epitem</code> is not in the <code>rdllist</code>.</p></li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// this initializes a list_head
+</span><span class="c1"></span><span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span>
+<span class="nf">INIT_LIST_HEAD</span><span class="p">(</span><span class="k">struct</span> <span class="n">list_head</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">list</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">list</span><span class="o">-&gt;</span><span class="n">prev</span> <span class="o">=</span> <span class="n">list</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">bool</span>
+<span class="nf">list_empty</span><span class="p">(</span><span class="k">struct</span> <span class="n">list_head</span> <span class="o">*</span><span class="n">head</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">==</span> <span class="n">head</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">int</span> <span class="nf">ep_is_linked</span><span class="p">(</span><span class="k">struct</span> <span class="n">list_head</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="k">return</span> <span class="o">!</span><span class="n">list_empty</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span>
+<span class="nf">__list_del</span><span class="p">(</span><span class="k">struct</span> <span class="n">list_head</span> <span class="o">*</span><span class="n">prev</span><span class="p">,</span> <span class="k">struct</span> <span class="n">list_head</span> <span class="o">*</span><span class="n">next</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">next</span><span class="o">-&gt;</span><span class="n">prev</span> <span class="o">=</span> <span class="n">prev</span><span class="p">;</span>
+    <span class="n">prev</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">next</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span>
+<span class="nf">list_del_init</span><span class="p">(</span><span class="k">struct</span> <span class="n">list_head</span> <span class="o">*</span><span class="n">entry</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">__list_del</span><span class="p">(</span><span class="n">entry</span><span class="o">-&gt;</span><span class="n">prev</span><span class="p">,</span> <span class="n">entry</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">);</span>
+    <span class="n">INIT_LIST_HEAD</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h5 id="pros-and-cons-of-embedded-anchor">pros and cons of embedded anchor&nbsp;<a class="headline-hash no-text-decoration" href="#pros-and-cons-of-embedded-anchor">#</a> </h5>
+
+<p>pros</p>
+
+<ol>
+<li>don&rsquo;t need to allocate/deallocate memory for the node when
+inserting/deleting</li>
+<li>with a pointer to <code>epitem</code>, we can
+
+<ul>
+<li>tell if it is currently linked inside a <code>rdllist</code></li>
+<li>remove it from <code>rdllist</code></li>
+</ul></li>
+<li>don&rsquo;t need a list type for every type of element</li>
+<li>elements of a list can be of different types</li>
+</ol>
+
+<p>cons</p>
+
+<ol>
+<li>need to know which containers the strcut will be added into in
+advance.
+
+<ol>
+<li>this is ok because
+
+<ol>
+<li>we (the programmers of the kernel) have control of the code
+in whole kernel</li>
+<li>still possible to fall back to the usual way if necessary</li>
+</ol></li>
+</ol></li>
+<li>similar to using <code>void*</code> to pass different types of data,
+programmers must keep in mind the actual type of underlying data.</li>
+</ol>
+
+<p>In summary, by making use of the knowledge of how the struct will be used,
+we use this design pattern to improve performance and convenience, at
+the cost of giving extra care at programming.</p>
+
+<h4 id="embed-struct-to-store-more-data">embedded original struct into another struct to pass more data&nbsp;<a class="headline-hash no-text-decoration" href="#embed-struct-to-store-more-data">#</a> </h4>
+
+<p>In addition to using embedded <code>list_head</code> to implement linked list,
+the kernel code also use the trick of embedded struct to pass more
+data.</p>
+
+<p>To understand what I mean, let&rsquo;s see an example in the epoll
+implementation.</p>
+
+<p>Remind the section about the <code>poll()</code> operation of a file.</p>
+
+<p>We call the <code>poll()</code> operation of the file with <code>file*</code> and
+<code>poll_table*</code>. Internally, for each queue related to operation
+readiness in the file, we will call te callback wrapped inside
+<code>poll_table</code> with it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">poll_wait</span><span class="p">(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span> <span class="n">filp</span><span class="p">,</span> <span class="n">wait_queue_head_t</span> <span class="o">*</span> <span class="n">wait_address</span><span class="p">,</span> <span class="n">poll_table</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">&amp;&amp;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">_qproc</span> <span class="o">&amp;&amp;</span> <span class="n">wait_address</span><span class="p">)</span>
+                <span class="n">p</span><span class="o">-&gt;</span><span class="n">_qproc</span><span class="p">(</span><span class="n">filp</span><span class="p">,</span> <span class="n">wait_address</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The callback is called with</p>
+
+<ul>
+<li>the <code>file*</code> indicating the file</li>
+<li>a <code>wait_queue_head_t</code>, which is the queue</li>
+<li><code>poll_table*</code>, which we pass to the poll operation.</li>
+</ul>
+
+<p>What if we need more data in this callback? More specifically, in the
+implementation of epoll, this callback will be <code>ep_ptable_queue_proc</code>,
+and inside this function, we need to get the pointer to the
+corresponding <code>epitem</code>. How can we do this?</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">static</span> <span class="kt">void</span> <span class="nf">ep_ptable_queue_proc</span><span class="p">(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="n">wait_queue_head_t</span> <span class="o">*</span><span class="n">whead</span><span class="p">,</span>
+                                 <span class="n">poll_table</span> <span class="o">*</span><span class="n">pt</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// need to get a pointer to the corresponding epitem of this file
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div>
+<p>Here, <code>file</code> is a preexist kernel structure, indicating the opened
+file. <code>whead</code> is the queue provided by the device. <code>poll_table</code> is the
+argument of this <code>poll()</code> call.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">typedef</span> <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">poll_queue_proc</span><span class="p">)(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="p">,</span> <span class="n">wait_queue_head_t</span> <span class="o">*</span><span class="p">,</span> <span class="k">struct</span> <span class="n">poll_table_struct</span> <span class="o">*</span><span class="p">);</span>
+
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">poll_table_struct</span> <span class="p">{</span>
+    <span class="n">poll_queue_proc</span> <span class="n">_qproc</span><span class="p">;</span>
+    <span class="n">__poll_t</span> <span class="n">_key</span><span class="p">;</span>                      <span class="c1">// a bitmask indicating interested events
+</span><span class="c1"></span><span class="p">}</span> <span class="n">poll_table</span><span class="p">;</span>
+</code></pre></div>
+<p>As we can see, there is no place in <code>poll_table_struct</code> for extra
+data.</p>
+
+<p>In a language that supports lambda function and closure, we may
+consider to store the wanted <code>epitem*</code> in a temporary lambda
+function. Somehow similar to this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">ep_ptable_queue_proc</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">whead</span><span class="p">,</span> <span class="n">pt</span><span class="p">,</span> <span class="n">epitem</span><span class="p">):</span>
+    <span class="c1"># omitted</span>
+    <span class="k">pass</span>
+
+
+<span class="k">def</span> <span class="nf">call_poll_operation</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">event_mask</span><span class="p">,</span> <span class="n">epitem</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">temp_fun</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">whead</span><span class="p">,</span> <span class="n">pt</span><span class="p">):</span>
+        <span class="c1"># save epitem in the closure</span>
+        <span class="n">ep_ptable_queue_proc</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">whead</span><span class="p">,</span> <span class="n">pt</span><span class="p">,</span> <span class="n">epitem</span><span class="p">)</span>
+
+    <span class="n">poll_table</span> <span class="o">=</span> <span class="p">(</span><span class="n">temp_fun</span><span class="p">,</span> <span class="n">event_mask</span><span class="p">)</span>
+    <span class="n">poll</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">poll_table</span><span class="p">)</span></code></pre></div>
+<p>But we can&rsquo;t do this in C, especially not in the kernel.</p>
+
+<p>The solution is, wrap the <code>poll_table</code> that we pass to the poll
+operation in another struct, and store the needed info in this outer
+struct.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/* Wrapper struct used by poll queueing */</span>
+<span class="k">struct</span> <span class="n">ep_pqueue</span> <span class="p">{</span>
+    <span class="n">poll_table</span> <span class="n">pt</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">epitem</span> <span class="o">*</span><span class="n">epi</span><span class="p">;</span>
+<span class="p">};</span>
+
+
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">ep_insert</span><span class="p">(</span><span class="k">struct</span> <span class="n">eventpoll</span> <span class="o">*</span><span class="n">ep</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">epoll_event</span> <span class="o">*</span><span class="n">event</span><span class="p">,</span>
+                     <span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="n">tfile</span><span class="p">,</span> <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">full_check</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// many code omited
+</span><span class="c1"></span>    <span class="k">struct</span> <span class="n">epitem</span> <span class="o">*</span><span class="n">epi</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">ep_pqueue</span> <span class="n">epq</span><span class="p">;</span>
+
+    <span class="cm">/* Initialize the poll table using the queue callback */</span>
+    <span class="n">epq</span><span class="p">.</span><span class="n">epi</span> <span class="o">=</span> <span class="n">epi</span><span class="p">;</span>
+    <span class="n">init_poll_funcptr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">epq</span><span class="p">.</span><span class="n">pt</span><span class="p">,</span> <span class="n">ep_ptable_queue_proc</span><span class="p">);</span>
+
+    <span class="c1">// will call the poll operation of the file of this epitem with
+</span><span class="c1"></span>    <span class="c1">// epq.pt
+</span><span class="c1"></span>    <span class="n">revents</span> <span class="o">=</span> <span class="n">ep_item_poll</span><span class="p">(</span><span class="n">epi</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">epq</span><span class="p">.</span><span class="n">pt</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// mainly call the poll operation of the file
+</span><span class="c1"></span><span class="k">static</span> <span class="n">__poll_t</span> <span class="nf">ep_item_poll</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">epitem</span> <span class="o">*</span><span class="n">epi</span><span class="p">,</span> <span class="n">poll_table</span> <span class="o">*</span><span class="n">pt</span><span class="p">,</span> <span class="kt">int</span> <span class="n">depth</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// simplified
+</span><span class="c1"></span>        <span class="n">pt</span><span class="o">-&gt;</span><span class="n">_key</span> <span class="o">=</span> <span class="n">epi</span><span class="o">-&gt;</span><span class="n">event</span><span class="p">.</span><span class="n">events</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">is_file_epoll</span><span class="p">(</span><span class="n">epi</span><span class="o">-&gt;</span><span class="n">ffd</span><span class="p">.</span><span class="n">file</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">epi</span><span class="o">-&gt;</span><span class="n">ffd</span><span class="p">.</span><span class="n">file</span><span class="o">-&gt;</span><span class="n">f_op</span><span class="o">-&gt;</span><span class="n">poll</span><span class="p">(</span><span class="n">epi</span><span class="o">-&gt;</span><span class="n">ffd</span><span class="p">.</span><span class="n">file</span><span class="p">,</span> <span class="n">pt</span><span class="p">)</span> <span class="o">&amp;</span>
+                       <span class="n">epi</span><span class="o">-&gt;</span><span class="n">event</span><span class="p">.</span><span class="n">events</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Inside <code>ep_ptable_queue_proc</code>, we get the <code>epitem*</code> like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp">  <span class="k">static</span> <span class="kt">void</span> <span class="nf">ep_ptable_queue_proc</span><span class="p">(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="n">wait_queue_head_t</span> <span class="o">*</span><span class="n">whead</span><span class="p">,</span>
+                                   <span class="n">poll_table</span> <span class="o">*</span><span class="n">pt</span><span class="p">)</span>
+  <span class="p">{</span>
+      <span class="k">struct</span> <span class="n">epitem</span> <span class="o">*</span><span class="n">epi</span> <span class="o">=</span> <span class="n">ep_item_from_epqueue</span><span class="p">(</span><span class="n">pt</span><span class="p">);</span>
+      <span class="c1">// code omitted
+</span><span class="c1"></span>  <span class="p">}</span>
+
+  <span class="cm">/* Get the &#34;struct epitem&#34; from an epoll queue wrapper */</span>
+  <span class="k">static</span> <span class="kr">inline</span> <span class="k">struct</span> <span class="n">epitem</span> <span class="o">*</span><span class="nf">ep_item_from_epqueue</span><span class="p">(</span><span class="n">poll_table</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span>
+  <span class="p">{</span>
+          <span class="k">return</span> <span class="n">container_of</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="k">struct</span> <span class="n">ep_pqueue</span><span class="p">,</span> <span class="n">pt</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">epi</span><span class="p">;</span>
+  <span class="p">}</span>
+
+<span class="cp">#ifndef container_of
+</span><span class="cp">#define container_of(ptr, type, member) \
+</span><span class="cp"></span>    <span class="p">(</span><span class="n">type</span> <span class="o">*</span><span class="p">)((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)(</span><span class="n">ptr</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="p">((</span><span class="n">type</span> <span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">member</span><span class="p">)</span>
+<span class="cp">#endif
+</span><span class="cp"></span></code></pre></div>
+<p>How does it work?</p>
+
+<ol>
+<li>a <code>poll_table</code> is embedded into <code>ep_pqueue</code>
+
+<ol>
+<li>and the callback wrapped in this <code>poll_table</code> is
+<code>ep_ptable_queue_proc</code>.</li>
+</ol></li>
+<li>we pass a pointer to this embedded <code>poll_table</code> to the <code>poll()</code></li>
+<li>internally, the callback will be called with queue(s) in the file
+and the <code>poll_table*</code> we passed in.</li>
+<li>Here, the callback is <code>ep_ptable_queue_proc</code></li>
+<li>inside <code>ep_ptable_queue_proc</code>, we know that this <code>poll_table</code> must
+be wrapped inside a <code>ep_pqueue</code> (because <code>ep_ptable_queue_proc</code> is
+only used here, and here the <code>poll_table</code> is wrapped inside a
+<code>ep_pqueue</code>).</li>
+<li>according to the memory layout of struct <code>ep_pqueue</code> (which is
+fixed at compilation time), we can get the starting address of this
+<code>ep_pqueue</code> from <code>poll_table*</code>.</li>
+<li>then, we just need to access the <code>epi</code> field on this <code>ep_pqueue</code>.</li>
+</ol>
+
+<h3 id="wait-queue-in-the-kernel">wait queue in the Kernel&nbsp;<a class="headline-hash no-text-decoration" href="#wait-queue-in-the-kernel">#</a> </h3>
+
+<p>In the implementation of epoll, wait queue is used a lot.</p>
+
+<p>Here I will do a brief introduction about the usage of wait queue in
+the kernel.</p>
+
+<p>A wait queue is like a hook in elisp. When something interesting
+occurs, you call every callback in the wait queue.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="n">wait_queue_entry</span> <span class="p">{</span>
+        <span class="kt">unsigned</span> <span class="kt">int</span>		<span class="n">flags</span><span class="p">;</span>
+        <span class="kt">void</span>			<span class="o">*</span><span class="k">private</span><span class="p">;</span>
+        <span class="n">wait_queue_func_t</span>	<span class="n">func</span><span class="p">;</span>
+        <span class="k">struct</span> <span class="n">list_head</span>	<span class="n">entry</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">wait_queue_head</span> <span class="p">{</span>
+        <span class="n">spinlock_t</span>		<span class="n">lock</span><span class="p">;</span>
+        <span class="k">struct</span> <span class="n">list_head</span>	<span class="n">head</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">wait_queue_head</span> <span class="n">wait_queue_head_t</span><span class="p">;</span>
+</code></pre></div>
+<p>The key here is the <code>wait_queue_entry.func</code>, which is the callback.</p>
+
+<p>When we want to activate this queue, we call <code>__wake_up_common</code> on it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// greatly simplified
+</span><span class="c1"></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">__wake_up_common</span><span class="p">(</span><span class="k">struct</span> <span class="n">wait_queue_head</span> <span class="o">*</span><span class="n">wq_head</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">mode</span><span class="p">,</span>
+                            <span class="kt">int</span> <span class="n">nr_exclusive</span><span class="p">,</span> <span class="kt">int</span> <span class="n">wake_flags</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span>
+                            <span class="n">wait_queue_entry_t</span> <span class="o">*</span><span class="n">bookmark</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">wait_queue_entry_t</span> <span class="o">*</span><span class="n">curr</span><span class="p">,</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+    <span class="c1">// loop over the queue
+</span><span class="c1"></span>    <span class="n">list_for_each_entry_safe_from</span><span class="p">(</span><span class="n">curr</span><span class="p">,</span> <span class="n">next</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wq_head</span><span class="o">-&gt;</span><span class="n">head</span><span class="p">,</span> <span class="n">entry</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">unsigned</span> <span class="n">flags</span> <span class="o">=</span> <span class="n">curr</span><span class="o">-&gt;</span><span class="n">flags</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
+        <span class="c1">// call the callback on this entry. notice that a pointer to
+</span><span class="c1"></span>        <span class="c1">// this entry is passed to this callback as the first argument
+</span><span class="c1"></span>        <span class="n">ret</span> <span class="o">=</span> <span class="n">curr</span><span class="o">-&gt;</span><span class="n">func</span><span class="p">(</span><span class="n">curr</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">wake_flags</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>By default, we will have a callback that wake up the process at that
+time.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">void</span> <span class="nf">init_wait_entry</span><span class="p">(</span><span class="k">struct</span> <span class="n">wait_queue_entry</span> <span class="o">*</span><span class="n">wq_entry</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">wq_entry</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">=</span> <span class="n">flags</span><span class="p">;</span>
+    <span class="c1">// set private to current task
+</span><span class="c1"></span>    <span class="n">wq_entry</span><span class="o">-&gt;</span><span class="k">private</span> <span class="o">=</span> <span class="n">current</span><span class="p">;</span>
+    <span class="c1">// autoremove_wake_function will wake up the task stored in
+</span><span class="c1"></span>    <span class="c1">// &#34;private&#34; and remove this entry from the queue
+</span><span class="c1"></span>    <span class="n">wq_entry</span><span class="o">-&gt;</span><span class="n">func</span> <span class="o">=</span> <span class="n">autoremove_wake_function</span><span class="p">;</span>
+    <span class="n">INIT_LIST_HEAD</span><span class="p">(</span><span class="o">&amp;</span><span class="n">wq_entry</span><span class="o">-&gt;</span><span class="n">entry</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>However, epoll will use a customized callback, and doesn&rsquo;t have to
+wake up any task.</p>
+
+<h2 id="implementation">implementation&nbsp;<a class="headline-hash no-text-decoration" href="#implementation">#</a> </h2>
+
+<h3 id="epoll-create">epoll_create&nbsp;<a class="headline-hash no-text-decoration" href="#epoll-create">#</a> </h3>
+
+<ol>
+<li>alloc and initialize an <code>eventpoll</code></li>
+<li>alloc a fd</li>
+<li>alloc a <code>file</code>
+
+<ol>
+<li>set its private data to a pointer to this <code>eventpoll</code></li>
+</ol></li>
+<li>install this file with this fd into current process</li>
+</ol>
+
+<p>We use a fd to refer to the epoll instance. We want to do this
+fast. fd -&gt; <code>file</code> -&gt; <code>file.priv</code> is fast.</p>
+
+<h4 id="the-red-black-tree-in-eventpoll">the red-black tree in <code>eventpoll</code>&nbsp;<a class="headline-hash no-text-decoration" href="#the-red-black-tree-in-eventpoll">#</a> </h4>
+
+<p>In the <code>eventpoll</code>, there is a red-black tree containing all the
+<code>epitem</code> in this epoll instance.</p>
+
+<p><code>epitem.rbn</code> is the embedded anchor for this RBT.</p>
+
+<p>The key for the RBT is <code>epitem.ffd</code>, of type <code>epoll_filefd</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="n">epoll_filefd</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="n">file</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">__packed</span><span class="p">;</span>
+
+
+<span class="cm">/* Compare RB tree keys */</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">int</span> <span class="nf">ep_cmp_ffd</span><span class="p">(</span><span class="k">struct</span> <span class="n">epoll_filefd</span> <span class="o">*</span><span class="n">p1</span><span class="p">,</span>
+                             <span class="k">struct</span> <span class="n">epoll_filefd</span> <span class="o">*</span><span class="n">p2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">p1</span><span class="o">-&gt;</span><span class="n">file</span> <span class="o">&gt;</span> <span class="n">p2</span><span class="o">-&gt;</span><span class="n">file</span> <span class="o">?</span> <span class="o">+</span><span class="mi">1</span><span class="o">:</span>
+            <span class="p">(</span><span class="n">p1</span><span class="o">-&gt;</span><span class="n">file</span> <span class="o">&lt;</span> <span class="n">p2</span><span class="o">-&gt;</span><span class="n">file</span> <span class="o">?</span> <span class="o">-</span><span class="mi">1</span> <span class="o">:</span> <span class="n">p1</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">-</span> <span class="n">p2</span><span class="o">-&gt;</span><span class="n">fd</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Since this is a red-black tree, we can find, insert, delete in
+O(log(n)).</p>
+
+<p>This RBT is mainly used by <code>epoll_ctl</code> and other management
+functions. Getting the ready events and <code>epoll_wait</code> use other data
+structures instead of this RBT.</p>
+
+<h3 id="main-data-structure"><span class="todo TODO_">TODO </span> main data structure&nbsp;<a class="headline-hash no-text-decoration" href="#main-data-structure">#</a> </h3>
+
+<h3 id="epoll-ctl--epoll-ctl-add">epoll_ctl(EPOLL_CTL_ADD)&nbsp;<a class="headline-hash no-text-decoration" href="#epoll-ctl--epoll-ctl-add">#</a> </h3>
+
+<p>epoll_ctl(EPOLL_CTL_ADD):</p>
+
+<ol>
+<li>some simple check</li>
+<li>make sure that the key (<code>file*</code>, <code>fd</code>) doesn&rsquo;t exist yet</li>
+<li>call <code>ep_insert()</code></li>
+</ol>
+
+<p><code>ep_insert</code> do most of the job:</p>
+
+<ol>
+<li>construct a new <code>epitem</code></li>
+<li>call the file&rsquo;s poll operation: register callback into the queue(s)
+and get current events
+
+<ul>
+<li><code>ep_item_poll</code>, see below
+
+<ul>
+<li><a href="#poll-operation-of-file">poll() operation of file</a></li>
+</ul></li>
+</ul></li>
+<li>add this <code>epitem</code> to <code>file.f_ep_links</code> of the file (record all the
+<code>epitem</code> of a <code>file</code>)</li>
+<li>insert into the RBT</li>
+<li>if it is already ready, add it into <code>ep-&gt;rdllist</code> and wake up the
+two wait queues on <code>ep</code></li>
+</ol>
+
+<h4 id="ep-item-poll"><code>ep_item_poll</code>&nbsp;<a class="headline-hash no-text-decoration" href="#ep-item-poll">#</a> </h4>
+
+<p>What we do here is actually quite simple: call the file&rsquo;s <code>poll</code>
+operation, in order to</p>
+
+<ul>
+<li>call the callback provided by ourselves with each related queue in
+the file</li>
+<li>get current events of this file</li>
+</ul>
+
+<p>Here, the callback is <code>ep_ptable_queue_proc</code>.</p>
+
+<h4 id="ep-ptable-queue-proc-dot"><code>ep_ptable_queue_proc</code>.&nbsp;<a class="headline-hash no-text-decoration" href="#ep-ptable-queue-proc-dot">#</a> </h4>
+
+<p>So, what does this callback do?</p>
+
+<p>It add an entry into to wait queue.</p>
+
+<ol>
+<li>construct a new <code>eppoll_entry</code> (see below)</li>
+<li>add it into the wait queue (anchor: wait)</li>
+<li>link it into <code>epitem.pwqlist</code></li>
+</ol>
+
+<h5 id="epitem-dot-pwqlist"><code>epitem.pwqlist</code>&nbsp;<a class="headline-hash no-text-decoration" href="#epitem-dot-pwqlist">#</a> </h5>
+
+<p>This list contains all the wait queue entry <code>eppoll_entry</code> of this
+<code>epitem</code>.</p>
+
+<p>You may wonder that why do we need a list for this. A <code>epitem</code> is for
+only one file, and we only create new <code>eppoll_entry</code> at insertion.</p>
+
+<p>However, the file may provides multiple queues in the <code>poll()</code>
+operation.</p>
+
+<p>For example, in the <code>scull_p_poll()</code> example in <a href="#implementing-the-poll-operation">implementing the
+<code>poll</code> operation</a>, the device provide 2 queues instead of one. In this
+case, we will call the callback in <code>poll_table</code>,
+i.e. <code>ep_ptable_queue_proc</code>, twice, and create 2 <code>eppoll_entry</code>, one
+for each queue. Both of them are added into <code>epitem.pwqlist</code>.</p>
+
+<p>In summary, <code>epitem.pwqlist</code> contains all the wait queue entries
+<code>eppoll_entry</code> for this <code>epitem</code>. One for each queue provided by the
+device in its <code>poll</code> operation.</p>
+
+<h4 id="eppoll-entry"><code>eppoll_entry</code>&nbsp;<a class="headline-hash no-text-decoration" href="#eppoll-entry">#</a> </h4>
+
+<p>So, after a long way, we are here. Most of the work before is for
+adding the <code>eppoll_entry</code> to the wait queue(s) of the file.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/* Wait structure used by the poll hooks */</span>
+<span class="k">struct</span> <span class="n">eppoll_entry</span> <span class="p">{</span>
+        <span class="cm">/* List header used to link this structure to the &#34;struct epitem&#34; */</span>
+        <span class="k">struct</span> <span class="n">list_head</span> <span class="n">llink</span><span class="p">;</span>
+
+        <span class="cm">/* The &#34;base&#34; pointer is set to the container &#34;struct epitem&#34; */</span>
+        <span class="k">struct</span> <span class="n">epitem</span> <span class="o">*</span><span class="n">base</span><span class="p">;</span>
+
+        <span class="cm">/*
+</span><span class="cm">         * Wait queue item that will be linked to the target file wait
+</span><span class="cm">         * queue head.
+</span><span class="cm">         */</span>
+        <span class="n">wait_queue_entry_t</span> <span class="n">wait</span><span class="p">;</span>
+
+        <span class="cm">/* The wait queue head that linked the &#34;wait&#34; wait queue item */</span>
+        <span class="n">wait_queue_head_t</span> <span class="o">*</span><span class="n">whead</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>Let&rsquo;s see in detail how <code>ep_ptable_queue_proc</code> do this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">static</span> <span class="kt">void</span> <span class="nf">ep_ptable_queue_proc</span><span class="p">(</span><span class="k">struct</span> <span class="n">file</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="n">wait_queue_head_t</span> <span class="o">*</span><span class="n">whead</span><span class="p">,</span>
+                                 <span class="n">poll_table</span> <span class="o">*</span><span class="n">pt</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">epitem</span> <span class="o">*</span><span class="n">epi</span> <span class="o">=</span> <span class="n">ep_item_from_epqueue</span><span class="p">(</span><span class="n">pt</span><span class="p">);</span>
+    <span class="k">struct</span> <span class="n">eppoll_entry</span> <span class="o">*</span><span class="n">pwq</span><span class="p">;</span>
+
+    <span class="c1">// omitted ...
+</span><span class="c1"></span>    <span class="n">init_waitqueue_func_entry</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pwq</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">,</span> <span class="n">ep_poll_callback</span><span class="p">);</span>
+    <span class="n">pwq</span><span class="o">-&gt;</span><span class="n">whead</span> <span class="o">=</span> <span class="n">whead</span><span class="p">;</span>
+    <span class="n">pwq</span><span class="o">-&gt;</span><span class="n">base</span> <span class="o">=</span> <span class="n">epi</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">epi</span><span class="o">-&gt;</span><span class="n">event</span><span class="p">.</span><span class="n">events</span> <span class="o">&amp;</span> <span class="n">EPOLLEXCLUSIVE</span><span class="p">)</span>
+        <span class="n">add_wait_queue_exclusive</span><span class="p">(</span><span class="n">whead</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pwq</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">);</span>
+    <span class="k">else</span>
+        <span class="n">add_wait_queue</span><span class="p">(</span><span class="n">whead</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">pwq</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">);</span>
+    <span class="n">list_add_tail</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pwq</span><span class="o">-&gt;</span><span class="n">llink</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">epi</span><span class="o">-&gt;</span><span class="n">pwqlist</span><span class="p">);</span>
+    <span class="c1">// omitted ...
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div>
+<p>The code is quite straightforward. We just set the field on
+<code>eppoll_entry</code>, and add it into the queue and <code>epi-&gt;pwqlist</code>.</p>
+
+<p>We will talk about <code>EPOLLEXCLUSIVE</code> later.</p>
+
+<p>Here, just notice that there is a callback on the
+<code>wait_queue_entry_t</code>, i.e. <code>eppoll_entry.wait</code> (the anchor for the
+wait queue).</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="n">wait_queue_entry</span> <span class="p">{</span>
+        <span class="kt">unsigned</span> <span class="kt">int</span>		<span class="n">flags</span><span class="p">;</span>
+        <span class="kt">void</span>			<span class="o">*</span><span class="k">private</span><span class="p">;</span>
+        <span class="n">wait_queue_func_t</span>	<span class="n">func</span><span class="p">;</span>
+        <span class="k">struct</span> <span class="n">list_head</span>	<span class="n">entry</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<p><code>func</code> here is set to be <code>ep_poll_callback</code>.</p>
+
+<p>We want to attach more data to this <code>wait_queue_entry</code> (mainly
+<code>epitem*</code>). It is possible to make use of <code>wait_queue_entry.private</code>,
+like the default behavior which store current task to this
+field. However, we also want to link this entry into
+<code>epitem.pwqlist</code>. So, instead of using the <code>private</code> field, here we
+use the &ldquo;<a href="#embed-struct-to-store-more-data">embedded original struct into another struct to pass more
+data</a>&rdquo; trick here again</p>
+
+<h4 id="summary-of-epoll-ctl-add">summary of EPOLL_CTL_ADD&nbsp;<a class="headline-hash no-text-decoration" href="#summary-of-epoll-ctl-add">#</a> </h4>
+
+<p>We are done with <code>epoll_ctl(EPOLL_CTL_ADD)</code> now. We will see what the
+callback registered in the queue(s), i.e. <code>ep_poll_callback</code>, do
+later. Here, let&rsquo;s have a summary for EPOLL_CTL_ADD.</p>
+
+<p>Personally, I think that this is the most tricky part in the
+implementation of epoll. However, this is not because of the
+difficulty of the thing it do, but because of the design pattern which
+is unusual outside of the kernel.</p>
+
+<p>So, after all, what have it done after a successful <code>EPOLL_CTL_ADD</code>?</p>
+
+<p>(<code>ep</code> shorts for <code>eventpoll</code>)</p>
+
+<table>
+<thead>
+<tr>
+<th>what</th>
+<th>extra</th>
+<th>where</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>check: key shuold not in the <code>ep.rbr</code> now</td>
+<td></td>
+<td>epoll_ctl</td>
+</tr>
+
+<tr>
+<td><strong>construct a new <code>epitem</code></strong></td>
+<td></td>
+<td>ep_insert</td>
+</tr>
+
+<tr>
+<td>for each wait queue provided by <code>poll</code> operation of this file</td>
+<td></td>
+<td>poll operation</td>
+</tr>
+
+<tr>
+<td>&gt;&gt;&gt; construct a new <code>eppoll_entry</code></td>
+<td>callback: <code>ep_poll_callback</code></td>
+<td>ep_ptable_queue_proc</td>
+</tr>
+
+<tr>
+<td>&gt;&gt;&gt; <strong>link this <code>eppoll_entry</code> into the queue</strong></td>
+<td></td>
+<td>ep_ptable_queue_proc</td>
+</tr>
+
+<tr>
+<td>&gt;&gt;&gt; link this <code>eppoll_entry</code> into <code>epitem.pwqlist</code></td>
+<td></td>
+<td>ep_ptable_queue_proc</td>
+</tr>
+
+<tr>
+<td>get current events of this file</td>
+<td></td>
+<td>poll operation</td>
+</tr>
+
+<tr>
+<td>add <code>epitem</code> to <code>file.f_ep_links</code></td>
+<td></td>
+<td>ep_insert</td>
+</tr>
+
+<tr>
+<td>insert this <code>epitem</code> into <code>ep.rbr</code></td>
+<td></td>
+<td>ep_insert</td>
+</tr>
+
+<tr>
+<td>if already ready, add to <code>ep.rdllist</code> and wait up queues on <code>ep</code></td>
+<td>discuss later</td>
+<td>ep_insert</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<p>related fun and struct:</p>
+
+<ul>
+<li><code>epitem</code>: one of the core data structure, represent a fd in the
+epoll set.
+
+<ul>
+<li>lifetime:
+
+<ul>
+<li>created and linked to the RBT on <code>eventpoll</code> during insertion</li>
+<li>unlinked from the RBT and deleted when this fd is removed from
+the epoll set</li>
+</ul></li>
+</ul></li>
+<li><code>ep_item_poll()</code>: used by <code>ep_insert</code>, call the <code>poll</code> operation of
+the file</li>
+</ul>
+
+<!--listend-->
+
+<ul>
+<li><code>ep_insert()</code>: do most of the job in <code>epoll_ctl(EPOLL_CTL_ADD)</code></li>
+<li><code>ep_ptable_queue_proc()</code>
+
+<ul>
+<li>the callback for poll operation during insertion</li>
+<li>will construct a new <code>eppoll_entry</code> and add it to the queue</li>
+<li>used only in insertion</li>
+</ul></li>
+<li><code>ep_pqueue</code>
+
+<ul>
+<li><code>poll_table</code> + <code>epitem*</code></li>
+<li>used to pass <code>epitem*</code> to <code>ep_ptable_queue_proc</code></li>
+<li>used only in insertion</li>
+</ul></li>
+</ul>
+
+<!--listend-->
+
+<ul>
+<li><code>eppoll_entry</code>
+
+<ul>
+<li>the entry for this <code>epitem</code> in the poll queue of the file</li>
+<li>lifetime:
+
+<ul>
+<li>created and added to the queue at <code>epoll_ctl(EPOLL_CTL_ADD)</code>,</li>
+<li>removed only when this fd is removed from the epoll set
+
+<ul>
+<li>(<code>EPOLL_CTL_DEL</code> or closing the whole epoll instance)</li>
+<li>(see where <code>ep_unregister_pollwait</code> is called)</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><code>ep_poll_callback()</code>
+
+<ul>
+<li>the callback on the wait queue entry. Will be called when the
+queue are activated.</li>
+</ul></li>
+</ul>
+
+<p>In the insertion, the main mission of <code>ep_insert()</code>, <code>ep_pqueue</code>,
+<code>ep_ptable_queue_proc()</code> is to access the queue(s) in the file and add
+<code>eppoll_entry</code> to each of them.</p>
+
+<p>After inserting the fd, what we need to do is to monitor the
+&ldquo;readiness&rdquo; of the fd in the epoll set. Here, the callback
+<code>ep_poll_callback</code> on the wait queue entry and <code>epoll_wait</code> will play
+the main roles. We will talk about them next.</p>
+
+<h3 id="a-few-words-about-the-event-mask">a few words about the event mask&nbsp;<a class="headline-hash no-text-decoration" href="#a-few-words-about-the-event-mask">#</a> </h3>
+
+<p>In the poll operation, there is an event mask in <code>poll_table</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">poll_table_struct</span> <span class="p">{</span>
+        <span class="n">poll_queue_proc</span> <span class="n">_qproc</span><span class="p">;</span>
+        <span class="n">__poll_t</span> <span class="n">_key</span><span class="p">;</span>                  <span class="c1">// the event mask
+</span><span class="c1"></span><span class="p">}</span> <span class="n">poll_table</span><span class="p">;</span>
+</code></pre></div>
+<p>On the <code>epoll_event</code>, which is the argument of <code>epoll_ctl</code> and stored
+on <code>epitem</code>, there is also an event mask.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">struct</span> <span class="n">epitem</span> <span class="p">{</span>
+    <span class="c1">// omitted ...
+</span><span class="c1"></span>    <span class="k">struct</span> <span class="n">epoll_event</span> <span class="n">event</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">epoll_event</span> <span class="p">{</span>
+    <span class="n">__poll_t</span> <span class="n">events</span><span class="p">;</span>
+    <span class="n">__u64</span> <span class="n">data</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">EPOLL_PACKED</span><span class="p">;</span>
+</code></pre></div>
+<p>We will use the mask in <code>epoll_event</code> as the mask in poll operation.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// in ep_item_poll
+</span><span class="c1"></span><span class="n">pt</span><span class="o">-&gt;</span><span class="n">_key</span> <span class="o">=</span> <span class="n">epi</span><span class="o">-&gt;</span><span class="n">event</span><span class="p">.</span><span class="n">events</span><span class="p">;</span>
+<span class="c1">// then use pt to call the poll operation of the file
+</span><span class="c1"></span></code></pre></div>
+<p>In <code>ep_poll_callback</code>, we will match the mask with the occured
+event. If don&rsquo;t match, discard this event.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// ep_poll_callback
+</span><span class="c1"></span>
+<span class="c1">// pollflags is the mask of the event
+</span><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="n">pollflags</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span><span class="n">pollflags</span> <span class="o">&amp;</span> <span class="n">epi</span><span class="o">-&gt;</span><span class="n">event</span><span class="p">.</span><span class="n">events</span><span class="p">))</span>
+    <span class="k">goto</span> <span class="n">out_unlock</span><span class="p">;</span>
+</code></pre></div>
+<p>We can modify this mask (<code>epi-&gt;event.events</code>) with
+<code>epoll_ctl(EPOLL_CTL_MOD)</code>.</p>
+
+<h3 id="when-are-the-queues-activated">when are the queues activated?&nbsp;<a class="headline-hash no-text-decoration" href="#when-are-the-queues-activated">#</a> </h3>
+
+<p>OK, now we have an <code>eppoll_entry</code> with callback <code>ep_poll_callback</code>
+sitting in each of the files. When are the queue(s) activated?</p>
+
+<h4 id="drilling-into-the-code">drilling into the code&nbsp;<a class="headline-hash no-text-decoration" href="#drilling-into-the-code">#</a> </h4>
+
+<p>When is the queue(s) in the poll operation of the file activated?</p>
+
+<p>Take socket as an example: <code>linux/sock.c</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="o">*</span>	<span class="err">@</span><span class="nl">sk_data_ready</span><span class="p">:</span> <span class="n">callback</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">there</span> <span class="n">is</span> <span class="n">data</span> <span class="n">to</span> <span class="n">be</span> <span class="n">processed</span>
+<span class="o">*</span>	<span class="err">@</span><span class="nl">sk_write_space</span><span class="p">:</span> <span class="n">callback</span> <span class="n">to</span> <span class="n">indicate</span> <span class="n">there</span> <span class="n">is</span> <span class="n">bf</span> <span class="n">sending</span> <span class="n">space</span> <span class="n">available</span>
+</code></pre></div>
+<p><code>sk-&gt;sk_data_ready</code> is called when data arrive. Its value is
+<code>sock_def_readable</code>. This function will activate the wait queue (where
+the <code>eppoll_entry</code> is added during <code>epoll_ctl(EPOLL_CTL_ADD)</code>) on the
+socket if feasible.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">static</span> <span class="kt">void</span> <span class="nf">sock_def_readable</span><span class="p">(</span><span class="k">struct</span> <span class="n">sock</span> <span class="o">*</span><span class="n">sk</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="k">struct</span> <span class="n">socket_wq</span> <span class="o">*</span><span class="n">wq</span><span class="p">;</span>
+
+        <span class="n">rcu_read_lock</span><span class="p">();</span>
+        <span class="n">wq</span> <span class="o">=</span> <span class="n">rcu_dereference</span><span class="p">(</span><span class="n">sk</span><span class="o">-&gt;</span><span class="n">sk_wq</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">skwq_has_sleeper</span><span class="p">(</span><span class="n">wq</span><span class="p">))</span>
+                <span class="n">wake_up_interruptible_sync_poll</span><span class="p">(</span><span class="o">&amp;</span><span class="n">wq</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">,</span> <span class="n">EPOLLIN</span> <span class="o">|</span> <span class="n">EPOLLPRI</span> <span class="o">|</span>
+                                                <span class="n">EPOLLRDNORM</span> <span class="o">|</span> <span class="n">EPOLLRDBAND</span><span class="p">);</span>
+        <span class="n">sk_wake_async</span><span class="p">(</span><span class="n">sk</span><span class="p">,</span> <span class="n">SOCK_WAKE_WAITD</span><span class="p">,</span> <span class="n">POLL_IN</span><span class="p">);</span>
+        <span class="n">rcu_read_unlock</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>It seems that this function is called every time data arrive at the
+socket. Start from <code>dccp/ipv4.c</code> <code>dccp_v4_rcv</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/* this is called when real data arrives */</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="n">dccp_v4_rcv</span><span class="p">(</span><span class="k">struct</span> <span class="n">sk_buff</span> <span class="o">*</span><span class="n">skb</span><span class="p">)</span>
+</code></pre></div>
+<p>And go all the way down to <code>sock_def_readable</code>.</p>
+
+<p>Similarly, <code>sock_def_write_space</code> is called when it is writable. It
+wakes up the queue when available space is not less than half of the
+buffer.  More accurately, I think that <code>sock_def_write_space</code> is
+called every time data is sent and some space get available. (not
+verified)</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">static</span> <span class="kt">void</span> <span class="nf">sock_def_write_space</span><span class="p">(</span><span class="k">struct</span> <span class="n">sock</span> <span class="o">*</span><span class="n">sk</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="k">struct</span> <span class="n">socket_wq</span> <span class="o">*</span><span class="n">wq</span><span class="p">;</span>
+
+        <span class="n">rcu_read_lock</span><span class="p">();</span>
+
+        <span class="cm">/* Do not wake up a writer until he can make &#34;significant&#34;
+</span><span class="cm">         * progress.  --DaveM
+</span><span class="cm">         */</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">refcount_read</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sk</span><span class="o">-&gt;</span><span class="n">sk_wmem_alloc</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">sk</span><span class="o">-&gt;</span><span class="n">sk_sndbuf</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">wq</span> <span class="o">=</span> <span class="n">rcu_dereference</span><span class="p">(</span><span class="n">sk</span><span class="o">-&gt;</span><span class="n">sk_wq</span><span class="p">);</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">skwq_has_sleeper</span><span class="p">(</span><span class="n">wq</span><span class="p">))</span>
+                        <span class="n">wake_up_interruptible_sync_poll</span><span class="p">(</span><span class="o">&amp;</span><span class="n">wq</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">,</span> <span class="n">EPOLLOUT</span> <span class="o">|</span>
+                                                <span class="n">EPOLLWRNORM</span> <span class="o">|</span> <span class="n">EPOLLWRBAND</span><span class="p">);</span>
+
+                <span class="cm">/* Should agree with poll, otherwise some programs break */</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">sock_writeable</span><span class="p">(</span><span class="n">sk</span><span class="p">))</span>
+                        <span class="n">sk_wake_async</span><span class="p">(</span><span class="n">sk</span><span class="p">,</span> <span class="n">SOCK_WAKE_SPACE</span><span class="p">,</span> <span class="n">POLL_OUT</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="n">rcu_read_unlock</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="why-does-it-matter">why does it matter?&nbsp;<a class="headline-hash no-text-decoration" href="#why-does-it-matter">#</a> </h4>
+
+<p>From the code, it seems that, in socket, the queue which
+<code>eppoll_entry</code> is in is activated when:</p>
+
+<ul>
+<li>every time data arrive and</li>
+<li>every time data is sent and it is writable now (a reasonable amount
+of space is available in the write buffer).</li>
+</ul>
+
+<p>You can see that this behavior is quite similar to the epoll
+edge-triggered mode.</p>
+
+<p>Actually, from the code, we will see that registering a callback
+(<code>ep_poll_callback</code>) to the queue of the fd leads to a edge-triggered
+behavior naturally. On top of this, we support a level-triggered
+behavior with some extra code (It is quite simple. Discussed later.)</p>
+
+<p>Knowing this, we can get better understanding of the behavior of the
+edge-triggered mode.</p>
+
+<p>When a big chunk of data arrive, the queue is activated once. If we
+read only a part of it and leave some unread in the socket read
+buffer, we won&rsquo;t get another notification until the arrival of new
+data.</p>
+
+<p>Here is an example (one socket, ET)</p>
+
+<ol>
+<li>100B data arrive
+
+<ol>
+<li>queue activated, <code>ep_poll_callback</code> is called</li>
+</ol></li>
+<li><code>epoll_wait</code>, get the event</li>
+<li>read 50B</li>
+<li><code>epoll_wait</code>, get nothing</li>
+</ol>
+
+<p>However, if data arrive multiple times, we can get multiple events
+with multiple <code>epoll_wait</code>, even if we never read from it.</p>
+
+<ol>
+<li>10B data arrive
+
+<ol>
+<li>queue activated, <code>ep_poll_callback</code> is called</li>
+</ol></li>
+<li><code>epoll_wait</code>, get the event</li>
+<li>10B data arrive
+
+<ol>
+<li>ditto</li>
+</ol></li>
+<li><code>epoll_wait</code>, get the event</li>
+<li>10B data arrive
+
+<ol>
+<li>ditto</li>
+</ol></li>
+<li><code>epoll_wait</code>, get the event</li>
+<li>&hellip;</li>
+</ol>
+
+<p>Hence the words in the manual of <code>epoll</code>:<sup class="footnote-ref" id="fnref:fn-7"><a href="#fn:fn-7">7</a></sup></p>
+
+<blockquote>
+<p>Since even with edge-triggered epoll, multiple events can be generated
+upon receipt of multiple chunks of data, the caller has the option to
+specify the EPOLLONESHOT flag, &hellip;</p>
+</blockquote>
+
+<h3 id="collecting-ready-events">collecting ready events&nbsp;<a class="headline-hash no-text-decoration" href="#collecting-ready-events">#</a> </h3>
+
+<p>Remind that, the purpose of <code>epoll</code> is to get the fd in the epoll set
+that are ready for read and/or write. We get the <code>epoll_event</code>
+describing ready fd in an array provided by ourselves, by calling
+<code>epoll_wait()</code>. So, the problem here is, how are these events
+collected?</p>
+
+<p>In brief:</p>
+
+<ol>
+<li>there is a list of ready <code>epitem</code> on <code>eventpoll</code>, the data
+structure representing the epoll instance.</li>
+<li>when data arrive/is sent, the queue of the fd is activated, and
+<code>ep_poll_callback</code> is called
+
+<ol>
+<li><code>ep_poll_callback</code> will put the corresponding <code>epitem</code> into the
+ready list of <code>eventpoll</code></li>
+</ol></li>
+<li>when <code>epoll_wait</code> is called, we simply take current ready list,
+iterate over it and write to the output array.</li>
+</ol>
+
+<p>Some problems remain:</p>
+
+<ul>
+<li>what if the ready list is empty when we call <code>epoll_wait</code>?</li>
+<li>what if new events come (<code>ep_poll_callback</code> is called) when we are
+transferring data in <code>epoll_wait</code>?</li>
+</ul>
+
+<h3 id="ep-poll-callback">ep_poll_callback&nbsp;<a class="headline-hash no-text-decoration" href="#ep-poll-callback">#</a> </h3>
+
+<p>Let&rsquo;s see <code>ep_poll_callback</code> in detail.</p>
+
+<h4 id="arguments-of-ep-poll-callback">arguments of <code>ep_poll_callback</code>&nbsp;<a class="headline-hash no-text-decoration" href="#arguments-of-ep-poll-callback">#</a> </h4>
+
+<p>Signature of <code>ep_poll_callback</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">static</span> <span class="kt">int</span> <span class="n">ep_poll_callback</span><span class="p">(</span><span class="n">wait_queue_entry_t</span> <span class="o">*</span><span class="n">wait</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">mode</span><span class="p">,</span> <span class="kt">int</span> <span class="n">sync</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">key</span><span class="p">)</span>
+</code></pre></div>
+<p>Meaning of arguments:</p>
+
+<ul>
+<li><code>mode</code> and <code>sync</code> are not used</li>
+<li><code>wait</code> points to the wait queue entry that causes this callback to
+be called.
+
+<ul>
+<li>here, it points to a <code>wait_queue_entry_t</code> embedded in an
+<code>eppoll_entry</code></li>
+</ul></li>
+<li><code>key</code> is the mask indicating the event occured.
+
+<ul>
+<li>e.g. in <code>sock_def_readable</code>, when we wake up the queue, <code>key</code> is
+set to be <code>EPOLLIN | EPOLLPRI | EPOLLRDNORM | EPOLLRDBAND</code>.</li>
+</ul></li>
+</ul>
+
+<h4 id="ep-poll-callback-step-by-step"><code>ep_poll_callback</code>,step by step&nbsp;<a class="headline-hash no-text-decoration" href="#ep-poll-callback-step-by-step">#</a> </h4>
+
+<p>Below is what <code>ep_poll_callback</code> do, step by step. Before that, I want
+to mention that there is actually two ready list on an <code>eventpoll</code>
+instance: <code>rdllist</code> and <code>ovflist</code>. Most of the time,
+<code>ep_poll_callback</code> add ready <code>epitem</code> to <code>rdllist</code>. However, when
+there is a task calling <code>epoll_wait</code> and transfering current ready
+list to userspace, new ready <code>epitem</code> are linked into <code>ovflist</code>. (More
+detail later)</p>
+
+<p>(You may want to have the code in hand:
+<a href="https://github.com/torvalds/linux/blob/v4.16/fs/eventpoll.c#L1117">https://github.com/torvalds/linux/blob/v4.16/fs/eventpoll.c#L1117</a>)</p>
+
+<ol>
+<li>get <code>epitem*</code> from <code>wait</code>, the wait queue entry
+
+<ul>
+<li><a href="#embed-struct-to-store-more-data">embedded original struct into another struct to pass more data</a></li>
+</ul></li>
+<li>get <code>eventpoll*</code> from <code>epitem</code> (<code>epitem.ep</code>)</li>
+<li>lock <code>eventpoll</code> (<code>ep-&gt;lock</code>)(will discuss locking and multithread
+in detail later)</li>
+<li>Check if there are events that we are interested in. If not, clean
+up and done (<code>goto out_unlock</code>).
+
+<ol>
+<li>interested events is stored in <code>epi-&gt;event.events</code></li>
+<li>occured events is in <code>key</code></li>
+</ol></li>
+<li>if is transferring events to userspace now, add <code>epitem</code> into the
+<code>ep.ovflist</code>
+
+<ol>
+<li>in this case, don&rsquo;t wake up <code>wq</code> and <code>poll_wait</code> because there
+is already a process calling <code>epoll_wait</code></li>
+</ol></li>
+<li>link <code>epitem</code> into <code>ep.rdllist</code> unless already linked
+
+<ul>
+<li>If multiple events occur on one fd before calling <code>epoll_wait</code>,
+we can see here that after the first occurrence, the <code>epitem</code> is
+linked inside <code>rdllist</code>. Following call of <code>ep_poll_callback</code>
+just skip this step.
+
+<ul>
+<li>In effect, multiple events on one fd before any <code>epoll_wait</code>
+are &ldquo;merged&rdquo; into one.</li>
+</ul></li>
+<li>we can tell if it is in the list in O(1) (see <a href="#add-add_tail-delete-contains-all-in-O-1-">add, add_tail,
+delete, contains, all in O(1)</a>)
+
+<ol>
+<li>use <code>epitem.rdllink</code> to link it into the ready list</li>
+<li>one <code>epitem</code> is only used by one epoll instance</li>
+<li>only need to check <code>epitem.rdllink</code></li>
+</ol></li>
+</ul></li>
+<li>activate wait queues in the epoll instance: <code>wq</code> and <code>poll_wait</code>
+
+<ol>
+<li><code>wq</code>: processes calling <code>epoll_wait()</code> and blocked</li>
+<li><code>poll_wait</code>: queue for the <code>pull()</code> operation of the epoll fd
+itself
+
+<ol>
+<li>epoll can be used in a nested manner, i.e. adding an epfd
+into another epoll. This need special treatment in the epoll
+implementation to avoid problems, for example, closed
+loops. Not discussed here.</li>
+</ol></li>
+</ol></li>
+<li>out_unlock
+
+<ol>
+<li>unlock <code>eventpoll</code></li>
+</ol></li>
+</ol>
+
+<p>(Other) things that I have omitted:</p>
+
+<ul>
+<li><code>RCU</code>, <code>wakeup_source</code>: don&rsquo;t know yet.</li>
+<li><code>EPOLLEXCLUSIVE</code>: new feature in Linux 4.5. Will be discussed
+separately.</li>
+</ul>
+
+<h4 id="summary-of-ep-poll-callback">summary of <code>ep_poll_callback</code>&nbsp;<a class="headline-hash no-text-decoration" href="#summary-of-ep-poll-callback">#</a> </h4>
+
+<p>What does it do?</p>
+
+<ol>
+<li>check the mask of occured event. if nothing interested, do nothing.</li>
+<li>add the corresponding <code>epitem</code> into the ready list of the epoll
+instance. (<code>rdllist</code> or <code>ovflist</code>)</li>
+<li>activate the queues on the epoll instance
+
+<ul>
+<li><code>wq</code>: processes that are blocked in <code>epoll_wait</code></li>
+<li><code>poll_wait</code>: queue for the <code>poll</code> operation of <code>epoll</code> itself</li>
+</ul></li>
+</ol>
+
+<h3 id="epoll-wait">epoll_wait&nbsp;<a class="headline-hash no-text-decoration" href="#epoll-wait">#</a> </h3>
+
+<p>As mention before, what <code>epoll_wait</code> do is mainly making use of the
+current ready list on <code>eventpoll</code>, and write data to the user-provided
+array.</p>
+
+<p>This sounds simple, but there are some interesting things to take care
+of:</p>
+
+<ul>
+<li><code>epoll_wait</code> may block if there is no <code>epitem</code> in the ready list
+now.
+
+<ul>
+<li>and there may be multiple processes blocking on one epfd.</li>
+</ul></li>
+<li>need to handle the two ready lists correctly</li>
+<li>different behaviors for some different flags in epoll, like ET/LT and
+EPOLLONESHOT are mainly implemented here.</li>
+</ul>
+
+<h4 id="main-functions-used-in-epoll-wait">main functions used in <code>epoll_wait</code>&nbsp;<a class="headline-hash no-text-decoration" href="#main-functions-used-in-epoll-wait">#</a> </h4>
+
+<ul>
+<li><p><code>epoll_wait</code></p>
+
+<ul>
+<li>the entry point. do some simple check and call <code>ep_poll</code></li>
+</ul></li>
+
+<li><p><code>ep_poll</code></p>
+
+<ul>
+<li>do the &ldquo;polling&rdquo;, aka. the loop checking, until the ready list is
+not empty (if not nonblocking). If empty now, sleep until waked up
+by <code>ep_poll_callback</code>, signal or timeout.</li>
+<li>when the ready list is not empty, call <code>ep_send_events</code></li>
+</ul></li>
+
+<li><p><code>ep_send_events</code></p>
+
+<ul>
+<li>simply call <code>ep_scan_ready_list</code> with <code>ep_send_events_proc</code> as
+callback.</li>
+</ul></li>
+
+<li><p><code>ep_scan_ready_list</code></p>
+
+<ul>
+<li>mainly handle the &ldquo;main ready list and temp ready list&rdquo; thing, and
+call the passed-in callback (here is <code>ep_send_events_proc</code>) to do
+the real job.</li>
+</ul></li>
+
+<li><p><code>ep_send_events_proc</code></p>
+
+<ul>
+<li>loop over the ready list and do the copy to user array</li>
+<li>when working on each <code>epitem</code>, will call the <code>poll</code> operation of
+the file to check its current readiness. If there is currently no
+interested events on this file, will simply drop it without
+reporting to <code>epoll_wait</code>.</li>
+<li>handle <code>ET/LT</code> and <code>EPOLLONESHOT</code> here</li>
+</ul></li>
+
+<li><p>(I think that it is totally ok to write <code>ep_scan_ready_list</code> and
+<code>ep_send_events_proc</code> in one function. Here we split them and pass
+one to another as callback, mainly for reuse and code tidiness.)</p></li>
+</ul>
+
+<h4 id="ep-poll"><code>ep_poll</code>&nbsp;<a class="headline-hash no-text-decoration" href="#ep-poll">#</a> </h4>
+
+<p>(Again, you may want the code in hand:
+<a href="https://github.com/torvalds/linux/blob/v4.16/fs/eventpoll.c#L1739">https://github.com/torvalds/linux/blob/v4.16/fs/eventpoll.c#L1739</a>)</p>
+
+<p><code>ep_poll</code> has the same arguments as <code>epoll_wait</code>, except that the
+<code>epfd</code> in <code>epoll_wait</code> is replaced with <code>eventpoll*</code> here.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="nf">epoll_wait</span><span class="p">(</span><span class="kt">int</span> <span class="n">epfd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">epoll_event</span> <span class="o">*</span><span class="n">events</span><span class="p">,</span>
+               <span class="kt">int</span> <span class="n">maxevents</span><span class="p">,</span> <span class="kt">int</span> <span class="n">timeout</span><span class="p">)</span>
+
+<span class="k">static</span> <span class="kt">int</span> <span class="n">ep_poll</span><span class="p">(</span><span class="k">struct</span> <span class="n">eventpoll</span> <span class="o">*</span><span class="n">ep</span><span class="p">,</span> <span class="k">struct</span> <span class="n">epoll_event</span> <span class="n">__user</span> <span class="o">*</span><span class="n">events</span><span class="p">,</span>
+                   <span class="kt">int</span> <span class="n">maxevents</span><span class="p">,</span> <span class="kt">long</span> <span class="n">timeout</span><span class="p">);</span>
+</code></pre></div>
+<p>We can get the <code>eventpoll*</code> from <code>epfd</code> like this: (done in the
+<code>epoll_wait</code> function)</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">eventpoll</span><span class="o">*</span> <span class="n">ep</span> <span class="o">=</span> <span class="n">fdget</span><span class="p">(</span><span class="n">epfd</span><span class="p">).</span><span class="n">file</span><span class="o">-&gt;</span><span class="n">private_data</span><span class="p">;</span>
+</code></pre></div>
+<p>There are two parts in <code>ep_poll</code>:</p>
+
+<ul>
+<li>fetch_events</li>
+<li>check_events</li>
+</ul>
+
+
+
+
+
+<figure>
+    
+         
+            
+            
+            <img src="https://fd3kyt.github.io/ox-hugo/ep_poll_flow_chart.png"
+        
+             alt="/ox-hugo/ep_poll_flow_chart.png"/>
+        
+        
+</figure>
+
+
+<p><code>ep_events_available</code> is a very simple function:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/**
+</span><span class="cm"> * ep_events_available - Checks if ready events might be available.
+</span><span class="cm"> *
+</span><span class="cm"> * @ep: Pointer to the eventpoll context.
+</span><span class="cm"> *
+</span><span class="cm"> * Returns: Returns a value different than zero if ready events are available,
+</span><span class="cm"> *          or zero otherwise.
+</span><span class="cm"> */</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">int</span> <span class="nf">ep_events_available</span><span class="p">(</span><span class="k">struct</span> <span class="n">eventpoll</span> <span class="o">*</span><span class="n">ep</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="k">return</span> <span class="o">!</span><span class="n">list_empty</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ep</span><span class="o">-&gt;</span><span class="n">rdllist</span><span class="p">)</span> <span class="o">||</span> <span class="n">ep</span><span class="o">-&gt;</span><span class="n">ovflist</span> <span class="o">!=</span> <span class="n">EP_UNACTIVE_PTR</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Some extra notes:</p>
+
+<ul>
+<li><p><code>ep_busy_loop</code> in the code is for busy polling, a new feature added
+in v4.12. As I see it, it doesn&rsquo;t poll the file. Instead, it polls
+the network device. This won&rsquo;t affect the semantic of ET because the
+data in the device are considered &ldquo;not arrived&rdquo; yet. (Maybe more in
+another post.)</p>
+
+<ul>
+<li>see this commit: <a href="https://github.com/torvalds/linux/commit/bf3b9f6372c45b0fbf24d86b8794910d20170017">https://github.com/torvalds/linux/commit/bf3b9f6372c45b0fbf24d86b8794910d20170017</a></li>
+</ul></li>
+
+<li><p><code>epoll_wait</code> add current process to <code>ep-&gt;wq</code>, which is waked up in
+<code>ep_poll_callback</code></p>
+
+<ul>
+<li><p>This wait queue entry is marked as &ldquo;exclusive&rdquo;.</p>
+
+<ul>
+<li>When a queue is activated, the callbacks of <strong>all non-exclusive</strong>
+entries and the callback of <strong>one exclusive</strong> entry, if there is
+one, are called.</li>
+</ul></li>
+
+<li><p>Suppose that there are multiple processes blocking on one epoll
+instance in <code>epoll_wait</code> (the ready list should be empty now).
+When a <code>epitem</code> get into the ready list, only one of the
+<code>epoll_wait</code> should be waked up (thus the exclusive flag here). It
+will take the ready list and copy to the user&rsquo;s array (discuss
+below). After this, it will wake up <code>ep-&gt;wq</code> again if there are
+still available <code>epitem</code> in the ready list.</p></li>
+</ul></li>
+
+<li><p>the lock hold here is <code>ep-&gt;lock</code>, and it is unlocked when</p>
+
+<ul>
+<li>sleeping</li>
+<li>calling <code>ep_send_events</code></li>
+</ul></li>
+
+<li><p>according to the comment, the time that we set task state to
+<code>TASK_INTERRUPTIBLE</code> is important. But I don&rsquo;t quite understand it.</p></li>
+</ul>
+
+<h5 id="summary-of-ep-poll">summary of <code>ep_poll</code>&nbsp;<a class="headline-hash no-text-decoration" href="#summary-of-ep-poll">#</a> </h5>
+
+<p>Well, I think that this is a typical kernel function that</p>
+
+<ol>
+<li>check specific condition</li>
+<li>if not met, sleep until waked up or timed out</li>
+</ol>
+
+<p>Here,</p>
+
+<ul>
+<li>wanted condition is that the ready list is not empty</li>
+<li>add itself to <code>ep-&gt;wq</code> and expect to be waked up by
+<code>ep_poll_callback</code></li>
+<li>timeout is an argument of <code>epoll_wait</code></li>
+<li>when we find that the ready list is not empty, call
+<code>ep_send_events()</code>. If no event is actually sent, we go back to the
+waiting loop.</li>
+</ul>
+
+<p>This function (blocking) returns when one of these conditions happen:</p>
+
+<ul>
+<li>a signal is caught</li>
+<li>time out</li>
+<li>at least 1 events is sent to the userspace.</li>
+</ul>
+
+<h4 id="ep-scan-ready-list"><code>ep_scan_ready_list</code>&nbsp;<a class="headline-hash no-text-decoration" href="#ep-scan-ready-list">#</a> </h4>
+
+<p><code>ep_poll</code> call <code>ep_send_events</code> when there are <code>epitem</code> in the ready
+list. <code>ep_send_events</code> simply call <code>ep_scan_ready_list</code> with
+<code>ep_send_events_proc</code> as callback.</p>
+
+<p><code>ep_scan_ready_list</code></p>
+
+<ol>
+<li>initialize a new list <code>txlist</code></li>
+<li>lock <code>ep-&gt;mtx</code></li>
+<li>lock <code>ep-&gt;lock</code></li>
+<li>move current content of <code>rdllink</code> into <code>txlist</code>
+
+<ol>
+<li><code>rdllink</code> reinitialized to empty list</li>
+<li>these <code>epitem</code> are still linked together with <code>rdllink</code>. Just
+change the head of linked list from <code>ep-&gt;rdllist</code> to a temporary
+<code>txlist</code>.</li>
+</ol></li>
+<li>change <code>ep-&gt;ovflist</code> from <code>EP_UNACTIVE_PTR</code> to NULL
+
+<ol>
+<li>so, <code>ep_poll_callback</code> will add new <code>epitem</code> into <code>ovflist</code>
+directly without touching <code>rdllist</code></li>
+</ol></li>
+<li>with <code>ep-&gt;lock</code> temporarily unlocked:
+
+<ol>
+<li><strong>call the callback, here it is <code>ep_send_events_proc</code>.</strong></li>
+</ol></li>
+<li>move all epitems on <code>ovflist</code> to <code>rdllink</code>
+
+<ol>
+<li>if not already linked</li>
+</ol></li>
+<li>set <code>ep-&gt;ovflist</code> back to <code>EP_UNACTIVE_PTR</code>
+
+<ol>
+<li>so further <code>ep_poll_callback</code> will add <code>epitem</code> to <code>rdllist</code>,
+just like usual.</li>
+</ol></li>
+<li>concat <code>txlist</code> (remaining <code>epitems</code> not uesd by the callback) back
+to <code>rdllist</code>
+
+<ol>
+<li>in <code>ep_send_events_proc</code>, this only happens when an error occurs
+when writing data to the array provided by the user</li>
+</ol></li>
+<li>if the <code>rdllist</code> is not empty now
+
+<ul>
+<li>activate the two queues
+
+<ol>
+<li>activate <code>ep-&gt;wq</code> (with <code>ep-&gt;mtx</code> and <code>ep-&gt;lock</code> locked)</li>
+<li>activate <code>ep-&gt;poll_wait</code> (with <code>ep-&gt;mtx</code> and <code>ep-&gt;lock</code>
+unlocked)</li>
+</ol></li>
+<li>remind that in <code>ep_poll_callback</code>, we add current process to
+<code>ep-&gt;wq</code> with the exclusive flag, so only one <code>epoll_wait</code> is
+waked up when new event occurs. Here, after current process have
+done with the ready list, we activate <code>ep-&gt;wq</code> again so that
+another blocked <code>epoll_wait</code>, if there is one, will be waked up
+if the ready list is not empty now.</li>
+</ul></li>
+<li>unlock <code>ep-&gt;lock</code> and <code>ep-&gt;mtx</code></li>
+</ol>
+
+<h5 id="behavior-of-ovflist">behavior of <code>ovflist</code>&nbsp;<a class="headline-hash no-text-decoration" href="#behavior-of-ovflist">#</a> </h5>
+
+<p>In <code>ep_poll_callback</code>, we add to <code>ovflist</code> directly without checking
+<code>rdllink</code> if <code>ovflist</code> is active.</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/*
+</span><span class="cm"> * If we are transferring events to userspace, we can hold no locks
+</span><span class="cm"> * (because we&#39;re accessing user memory, and because of linux f_op-&gt;poll()
+</span><span class="cm"> * semantics). All the events that happen during that period of time are
+</span><span class="cm"> * chained in ep-&gt;ovflist and requeued later on.
+</span><span class="cm"> */</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">unlikely</span><span class="p">(</span><span class="n">ep</span><span class="o">-&gt;</span><span class="n">ovflist</span> <span class="o">!=</span> <span class="n">EP_UNACTIVE_PTR</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">epi</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">==</span> <span class="n">EP_UNACTIVE_PTR</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">epi</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">ep</span><span class="o">-&gt;</span><span class="n">ovflist</span><span class="p">;</span>
+                <span class="n">ep</span><span class="o">-&gt;</span><span class="n">ovflist</span> <span class="o">=</span> <span class="n">epi</span><span class="p">;</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">epi</span><span class="o">-&gt;</span><span class="n">ws</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="cm">/*
+</span><span class="cm">                         * Activate ep-&gt;ws since epi-&gt;ws may get
+</span><span class="cm">                         * deactivated at any time.
+</span><span class="cm">                         */</span>
+                        <span class="n">__pm_stay_awake</span><span class="p">(</span><span class="n">ep</span><span class="o">-&gt;</span><span class="n">ws</span><span class="p">);</span>
+                <span class="p">}</span>
+
+        <span class="p">}</span>
+        <span class="k">goto</span> <span class="n">out_unlock</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* If this file is already in the ready list we exit soon */</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">ep_is_linked</span><span class="p">(</span><span class="o">&amp;</span><span class="n">epi</span><span class="o">-&gt;</span><span class="n">rdllink</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">list_add_tail</span><span class="p">(</span><span class="o">&amp;</span><span class="n">epi</span><span class="o">-&gt;</span><span class="n">rdllink</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ep</span><span class="o">-&gt;</span><span class="n">rdllist</span><span class="p">);</span>
+        <span class="n">ep_pm_stay_awake_rcu</span><span class="p">(</span><span class="n">epi</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<ol>
+<li>Suppose an <code>epitem</code>, E, is currently in the ready list.</li>
+<li><code>epoll_wait</code>, in <code>ep_scan_ready_list</code>, current ready list is
+spliced to <code>txlist</code>.
+
+<ol>
+<li><code>E.rdllink</code> is linked, but now in the <code>txlist</code>, not the
+<code>rdllist</code></li>
+</ol></li>
+<li>at this time, events occur again on <code>epitem</code> E. <code>ep_poll_callback</code>
+is called.
+
+<ol>
+<li>if we check <code>rdllink</code> here, we may think that it is already in
+the ready list and do nothing. In effect, if there comes new
+event on a currently transfering <code>epitem</code>, it is ignored.</li>
+<li>However, this is not what we want. We want to preserve events
+occur during <code>epoll_wait</code>.</li>
+<li>So, instead, we add this <code>epitem</code> to <code>ovflist</code> temporarily and
+add it back to <code>rdllist</code> when the copying is done.</li>
+</ol></li>
+</ol>
+
+<!--listend-->
+
+<ol>
+<li>if an <code>epitem</code> is currently in the <code>txlist</code> in <code>ep_scan_ready_list</code>
+(linked with <code>rdllink</code>)</li>
+<li>new event come and <code>ep_poll_callback</code> is called.
+
+<ol>
+<li>should add this <code>epitem</code> to the ready list
+
+<ol>
+<li>don&rsquo;t want to &ldquo;merge&rdquo; the new event and the event that is
+currently transferring to the userspace in <code>epoll_wait</code></li>
+</ol></li>
+</ol></li>
+<li>can&rsquo;t link it into <code>rdllist</code>, because we need <code>rdllink</code> for this,
+and it is already used</li>
+<li>solution: add to <code>ovflist</code> instead</li>
+</ol>
+
+<h5 id="summary-of-ep-scan-ready-list">summary of <code>ep_scan_ready_list</code>&nbsp;<a class="headline-hash no-text-decoration" href="#summary-of-ep-scan-ready-list">#</a> </h5>
+
+<ul>
+<li>call the callback (will be <code>ep_send_events_proc</code>)
+
+<ul>
+<li><code>ep-&gt;mtx</code> locked and <code>ep-&gt;lock</code> not locked (discuss later)</li>
+</ul></li>
+<li>three lists here: <code>rdllist</code>, <code>ovflist</code>, <code>txlist</code>
+
+<ul>
+<li><code>ovflist</code> is a simple singly linked list, linked with
+<code>epitem.next</code>.
+
+<ul>
+<li>new <code>epitem</code> go to <code>ovflist</code> during the execution of the callback</li>
+</ul></li>
+<li><code>rdllist</code> and <code>txlist</code> both use <code>epitem.rdllink</code>
+
+<ul>
+<li>in this case, you can&rsquo;t tell if a <code>epitem</code> is linked inside
+<code>rdllist</code> or <code>txlist</code> by checking <code>epitem.rdllink</code></li>
+</ul></li>
+</ul></li>
+</ul>
+
+<h4 id="ep-send-events-proc"><code>ep_send_events_proc</code>&nbsp;<a class="headline-hash no-text-decoration" href="#ep-send-events-proc">#</a> </h4>
+
+<p><code>ep_send_events_proc</code> works on <code>txlist</code>, the ready list taken from
+<code>rdllist</code>. It does the copy to the userspace and handles flags like
+<code>EPOLLONESHOT</code> and <code>ET/LT</code>. Note that the <code>poll</code> operation of each fd
+is called here (again) to verify that the fd do have some events that
+we are interested in at this time.</p>
+
+<ol>
+<li>for each <code>epitem</code> on <code>txlist</code> (stop when number of sent events
+reach <code>maxevents</code>, the argument of <code>epoll_wait</code>.)
+
+<ol>
+<li>wake up <code>ep-&gt;ws</code> ???</li>
+<li>remove it from the list (linked with <code>epitem.rdllink</code>)</li>
+<li>call the <code>poll</code> operation of the file (again) to get its current
+event mask
+
+<ol>
+<li>the callback on <code>poll_table</code> is none
+
+<ol>
+<li>remind that in <code>epoll_ctl(EPOLL_CTL_ADD)</code>, we use the
+file&rsquo;s <code>poll</code> operation to get its current mask and
+register <code>eppoll_entry</code> to its queue(s). At that time, the
+callback is <code>ep_ptable_queue_proc</code>. Here, we don&rsquo;t need to
+do anything with the queue, thus the null callback.</li>
+</ol></li>
+</ol></li>
+<li><strong>if no monitored event now, discard this one</strong></li>
+<li>use <code>__put_user</code> to write to the <code>epoll_event</code> in the provided
+array in userspace.
+
+<ol>
+<li>if error occur, add this <code>epitem</code> back to <code>txlist</code> and set
+the return value to indicate error.</li>
+<li>otherwise: number of sent events +1 (<code>esed-&gt;res++</code>)</li>
+</ol></li>
+<li>if <code>EPOLLONESHOT</code>, deactivate this <code>epitem</code> by setting its event
+mask.</li>
+<li>otherwise, if <code>EPOLLLT</code>, add this <code>epitem</code> back to <code>rdllist</code></li>
+<li>return value is the number of events written to userspace, or a
+negative number indicating error.</li>
+</ol></li>
+</ol>
+
+<h5 id="lt-over-et">LT over ET&nbsp;<a class="headline-hash no-text-decoration" href="#lt-over-et">#</a> </h5>
+
+<p><code>ET</code> is the &ldquo;natural&rdquo; behavior of epoll, because of the usage of wait
+queues of the files and the timing that <code>ep_poll_callback</code> is
+called. We are notified every time a chunk of data
+arrive<sup class="footnote-ref" id="fnref:fn-8"><a href="#fn:fn-8">8</a></sup>. However, after the arrival, we can&rsquo;t get notification
+for the data unread and lying in the read buffer.</p>
+
+<p>If we want to know if there is currently data readable in the fd,
+instead of only getting notified when data arrive, what should we do?</p>
+
+<p>A naive solution is to keep a list of <code>epitem</code> that are marked
+<code>EPOLLLT</code> in the epoll instance. Every time we call <code>epoll_wait</code>, we
+check the event mask of each <code>epitem</code> in this list (<code>poll</code> operation).</p>
+
+<p>However, we can do better than that, because of the following
+observation: a fd is only possible to be readable &hellip;</p>
+
+<ul>
+<li>after an arrival of data (which is monitored by <code>ET</code>) (A)</li>
+<li>before the first time after this arrival that we find that this
+fd is not readable. (B)</li>
+</ul>
+
+<p>Hence the implementation of <code>LT</code></p>
+
+<ol>
+<li>add the <code>epitem</code> to the ready list at data arrival (already done in
+<code>ET</code>) (A)<sup class="footnote-ref" id="fnref:fn-9"><a href="#fn:fn-9">9</a></sup></li>
+<li>in epoll <code>ep_send_events_proc</code>:
+
+<ol>
+<li>Check the current event (readiness) of the fd of <code>epitem</code>. If no
+monitored events, discard this <code>epitem</code> from the ready list. (B)</li>
+<li>If it is not discarded, add it back to the <code>rdllist</code> after writing
+the corresponding <code>epoll_event</code> to the userspace.</li>
+</ol></li>
+</ol>
+
+<p>We can get interesting behavior from this. Consider the following case:</p>
+
+<ol>
+<li>initialize an epoll instance to monitor one fd (<code>EPOLLIN</code>,
+<code>EPOLLLT</code>)</li>
+
+<li><p>data arrive at this fd</p>
+
+<ol>
+<li><code>ep_poll_callback</code> is called, <code>epitem</code> of this fd is added to
+the ready list.</li>
+</ol></li>
+
+<li><p><code>epoll_wait</code>, get an <code>epoll_event</code> of this fd</p>
+
+<ol>
+<li>in <code>ep_send_events_proc</code>, we take this <code>epitem</code> off the list
+<code>txlist</code>, write to the user&rsquo;s <code>epoll_event</code>, and because of
+<code>EPOLLLT</code>, we add this <code>epitem</code> back to the ready list.</li>
+</ol></li>
+
+<li><p>read all data currently available on this fd. Further read will
+block.</p>
+
+<ol>
+<li>note that, this will not trigger any operation in the
+epoll<sup class="footnote-ref" id="fnref:fn-10"><a href="#fn:fn-10">10</a></sup></li>
+</ol></li>
+
+<li><p>do nothing for, let&rsquo;s say, a whole day.</p>
+
+<ol>
+<li><strong>for a whole day, this <code>epitem</code> sit in the ready list, although
+there is no data currently readable on it.</strong></li>
+</ol></li>
+
+<li><p>call <code>epoll_wait</code></p>
+
+<ol>
+<li><p>in <code>ep_send_events_proc</code>, we <code>poll</code> this fd and find that it is
+not ready for read. We simply discard this <code>epitem</code>.</p></li>
+
+<li><p><code>epoll_wait</code> gets no event.</p></li>
+</ol></li>
+</ol>
+
+<h4 id="summary-of-epoll-wait">summary of <code>epoll_wait</code>&nbsp;<a class="headline-hash no-text-decoration" href="#summary-of-epoll-wait">#</a> </h4>
+
+<p><code>epoll_wait</code> send events in current ready list to the userspace.</p>
+
+<ul>
+<li><p><code>ep_poll</code>: mainly implement the &ldquo;check-and-sleep&rdquo; loop for the
+blocking version of <code>epoll_wait</code></p></li>
+
+<li><p>when an <code>epoll_wait</code> is called, <code>ep_poll_callback</code> should add
+<code>epitem</code> to <code>eventpoll.ovflist</code> temporarily and when <code>epoll_wait</code> is
+done, content of <code>ovflist</code> should be moved into <code>rdllist</code>, the main
+ready list. <code>ep_scan_ready_list</code> handle this.</p></li>
+
+<li><p><code>ep_send_events_proc</code>: write the <code>epoll_event</code> of an <code>epitem</code> to the
+output array if feasible. Handle <code>EPOLLONESHOT</code>, <code>LT</code> here.</p></li>
+</ul>
+
+<h2 id="more">more&nbsp;<a class="headline-hash no-text-decoration" href="#more">#</a> </h2>
+
+<h3 id="lock-in-epoll">lock in epoll&nbsp;<a class="headline-hash no-text-decoration" href="#lock-in-epoll">#</a> </h3>
+
+<p>Let&rsquo;s see the comment in <code>fs/eventpoll.c</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/*
+</span><span class="cm"> * LOCKING:
+</span><span class="cm"> * There are three level of locking required by epoll :
+</span><span class="cm"> *
+</span><span class="cm"> * 1) epmutex (mutex)
+</span><span class="cm"> * 2) ep-&gt;mtx (mutex)
+</span><span class="cm"> * 3) ep-&gt;lock (spinlock)
+</span><span class="cm"> *
+</span><span class="cm"></span></code></pre></div>
+<p>Here is a summary of the usage of these locks:</p>
+
+<p>(&ldquo;W&rdquo; means the lock is held in (almost) the whole function.)</p>
+
+<table>
+<thead>
+<tr>
+<th>function name</th>
+<th>epmutex</th>
+<th>ep-&gt;mtx</th>
+<th>ep-&gt;lock</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>epoll_ctl</td>
+<td>handle nested epoll</td>
+<td>W</td>
+<td></td>
+</tr>
+
+<tr>
+<td>ep_scan_ready_list</td>
+<td></td>
+<td>W</td>
+<td>W, except calling <code>ep_send_events_proc</code></td>
+</tr>
+
+<tr>
+<td>ep_send_events_proc</td>
+<td></td>
+<td>(held by caller)</td>
+<td></td>
+</tr>
+
+<tr>
+<td>ep_poll_callback</td>
+<td></td>
+<td></td>
+<td>W</td>
+</tr>
+
+<tr>
+<td>ep_remove</td>
+<td></td>
+<td>(held by caller)</td>
+<td>when unlinking from <code>rdllist</code></td>
+</tr>
+
+<tr>
+<td>ep_modify (EPOLL_CTL_MOD)</td>
+<td></td>
+<td>(held by epoll_ctl)</td>
+<td>when(if) adding <code>epitem</code> to= <code>rdllist</code></td>
+</tr>
+
+<tr>
+<td>ep_insert</td>
+<td></td>
+<td>(held by epoll_ctl)</td>
+<td>when(if) adding <code>epitem</code> to= <code>rdllist</code></td>
+</tr>
+
+<tr>
+<td>ep_free (free epoll instance)</td>
+<td>W</td>
+<td>ep_remove() over RBT</td>
+<td></td>
+</tr>
+
+<tr>
+<td>eventpoll_release_file (auto remove)</td>
+<td>W</td>
+<td>ep_remove()</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="epmutex"><code>epmutex</code>&nbsp;<a class="headline-hash no-text-decoration" href="#epmutex">#</a> </h4>
+
+<p><code>epmutex</code> is a global mutex. Its comment is clear:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/*
+</span><span class="cm"> * This mutex is used to serialize ep_free() and eventpoll_release_file().
+</span><span class="cm"> */</span>
+<span class="k">static</span> <span class="nf">DEFINE_MUTEX</span><span class="p">(</span><span class="n">epmutex</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li><code>ep_free</code> destory the whole epoll instance.</li>
+<li><code>eventpoll_release_file</code> is called when a file is closed without
+unregistering from epoll.
+
+<ul>
+<li><code>file.f_ep_links</code> is a list of <code>epitem</code> of this file.</li>
+</ul></li>
+</ul>
+
+<p>Comment in <code>ep_free</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/*
+</span><span class="cm"> * We need to lock this because we could be hit by
+</span><span class="cm"> * eventpoll_release_file() while we&#39;re freeing the &#34;struct eventpoll&#34;.
+</span><span class="cm"> * We do not need to hold &#34;ep-&gt;mtx&#34; here because the epoll file
+</span><span class="cm"> * is on the way to be removed and no one has references to it
+</span><span class="cm"> * anymore. The only hit might come from eventpoll_release_file() but
+</span><span class="cm"> * holding &#34;epmutex&#34; is sufficient here.
+</span><span class="cm"> */</span>
+<span class="n">mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">epmutex</span><span class="p">);</span>
+</code></pre></div>
+<h4 id="ep-mtx"><code>ep-&gt;mtx</code>&nbsp;<a class="headline-hash no-text-decoration" href="#ep-mtx">#</a> </h4>
+
+<p>This lock is held when doing/avoiding modification on the <code>epitem</code> in
+the epoll (especially removal).</p>
+
+<p><code>ep_scan_ready_list</code> hold <code>ep-&gt;mtx</code> so that <code>epitem</code> won&rsquo;t vanish from
+the ready list because of unregistration.</p>
+
+<h4 id="ep-lock"><code>ep-&gt;lock</code>&nbsp;<a class="headline-hash no-text-decoration" href="#ep-lock">#</a> </h4>
+
+<p><code>ep-&gt;lock</code> protects the ready list <code>rdllist</code>.</p>
+
+<h5 id="ep-ovflist"><code>ep-&gt;ovflist</code>&nbsp;<a class="headline-hash no-text-decoration" href="#ep-ovflist">#</a> </h5>
+
+<p>We don&rsquo;t want to hold <code>ep-&gt;lock</code> when copying data to the userspace in
+<code>ep_send_events_proc</code>, because it is relatively slow and will hang up
+<code>ep_poll_callback</code>.</p>
+
+<p>As a solution, we add <code>ep-&gt;ovflist</code>. When <code>ep_scan_ready_list</code> is
+called, we change <code>ovflist</code> from unactive to active so that
+<code>ep_poll_callback</code> will add new <code>epitem</code> to <code>ovflist</code> temporarily,
+without touching <code>ep-&gt;rdllist</code> and <code>epi-&gt;rdllink</code>. When
+<code>ep_send_events_proc</code> is done, we move current <code>epitem</code> in <code>ovflist</code>
+into <code>rdllist</code> and deactivate <code>ovflist</code>.</p>
+
+<h6 id="why-ovflist-is-necessary">why <code>ovflist</code> is necessary?&nbsp;<a class="headline-hash no-text-decoration" href="#why-ovflist-is-necessary">#</a> </h6>
+
+<p>Since we splice <code>rdllist</code> to a temporary list <code>txlist</code> in
+<code>ep_scan_ready_list</code>, it seems that it is possible for new <code>epitem</code> to
+be added into <code>rdllist</code> directly. However, we don&rsquo;t do this because:</p>
+
+<ol>
+<li><p>both <code>txlist</code> and <code>rdllist</code> make use of <code>epitem-&gt;rdllink</code>.</p>
+
+<ul>
+<li><p>If we try to link an <code>epitem</code> that is currently in <code>txlist</code> into
+the <code>rdllist</code>, we will find that <code>rdllink</code> is already linked and
+do nothing. As a result, this new event is &ldquo;merged&rdquo; with the one
+in <code>txlist</code> now</p></li>
+
+<li><p>It seems that this is not what the author(s) want. We don&rsquo;t want
+to merge new events with those that are currently transferring to
+the userspace. (However, multiple events on one fd before any
+<code>epoll_wait</code> are merged.)</p>
+
+<ul>
+<li>(I don&rsquo;t know if such a behavior is necessary or just a
+preference.)</li>
+</ul></li>
+</ul></li>
+
+<li><p><code>ep_send_events_proc</code> may modify <code>rdllist</code>. If the <code>epitem</code> is
+<code>LT</code>, we will link it into <code>rdllist</code> after writing to the
+corresponding <code>epoll_event</code> in userspace.</p>
+
+<ol>
+<li><p>add this time, only this <code>ep_send_events_proc</code> will modify the
+<code>rdllist</code></p>
+
+<ol>
+<li><p><code>epoll_ctl</code> and other calls of <code>epoll_wait</code>
+(<code>ep_send_events_proc</code>) and are locked out by <code>ep-&gt;mtx</code>.</p></li>
+
+<li><p><code>ep_poll_callback</code> will queue new <code>epitem</code> in <code>ep-&gt;ovflist</code>.</p></li>
+</ol></li>
+</ol></li>
+</ol>
+
+<h3 id="epoll-ctl-mod-ep-modify">EPOLL_CTL_MOD, ep_modify&nbsp;<a class="headline-hash no-text-decoration" href="#epoll-ctl-mod-ep-modify">#</a> </h3>
+
+<p>When we call <code>epoll_ctl(EPOLL_CTL_MOD)</code>, it does some simple check and
+call <code>ep_modify</code> with <code>ep-&gt;mtx</code> held:</p>
+<div class="highlight"><pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/*
+</span><span class="cm"> * Modify the interest event mask by dropping an event if the new mask
+</span><span class="cm"> * has a match in the current file status. Must be called with &#34;mtx&#34; held.
+</span><span class="cm"> */</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="n">ep_modify</span><span class="p">(</span><span class="k">struct</span> <span class="n">eventpoll</span> <span class="o">*</span><span class="n">ep</span><span class="p">,</span> <span class="k">struct</span> <span class="n">epitem</span> <span class="o">*</span><span class="n">epi</span><span class="p">,</span>
+                     <span class="k">const</span> <span class="k">struct</span> <span class="n">epoll_event</span> <span class="o">*</span><span class="n">event</span><span class="p">)</span>
+</code></pre></div>
+<ol>
+<li>modify <code>epitem-&gt;event.events</code> and <code>epitem-&gt;event.data</code></li>
+<li>if have interesting event now (<code>ep_item_poll</code>)
+
+<ol>
+<li>link into the ready list (with <code>ep-&gt;lock</code> locked)</li>
+<li>wake up the two queues
+
+<ol>
+<li><code>ep-&gt;wq</code> (<code>ep-&gt;lock</code> locked)</li>
+<li><code>ep-&gt;poll_wait</code> (<code>ep-&gt;lock</code> unlocked)</li>
+</ol></li>
+</ol></li>
+</ol>
+
+<p>The most interesting thing here is that we check its current readiness
+after updating the event mask. If it has some interesting events now,
+we add it into the ready list. However, we don&rsquo;t remove it from the
+ready list (if it is there) when we find that it has no events
+currently monitored. This is ok because we will check its current
+events in <code>ep_send_events_proc</code> again before sending it to the output
+array.</p>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:fn-1">Notice that, this file operation named <code>poll</code> and the function <code>poll</code> for I/O multiplexing are different things.
+ <a class="footnote-return" href="#fnref:fn-1"><sup>[return]</sup></a></li>
+<li id="fn:fn-2">linux/poll.h
+ <a class="footnote-return" href="#fnref:fn-2"><sup>[return]</sup></a></li>
+<li id="fn:fn-3">Linux Device Drivers, Third Edition
+ <a class="footnote-return" href="#fnref:fn-3"><sup>[return]</sup></a></li>
+<li id="fn:fn-4">net/socket.c
+ <a class="footnote-return" href="#fnref:fn-4"><sup>[return]</sup></a></li>
+<li id="fn:fn-5">find this from <a href="https://patchwork.kernel.org/patch/10401923/">https://patchwork.kernel.org/patch/10401923/</a>
+ <a class="footnote-return" href="#fnref:fn-5"><sup>[return]</sup></a></li>
+<li id="fn:fn-6">copy from drivers/gpu/drm/nouveau/include/nvif/list.h ???
+ <a class="footnote-return" href="#fnref:fn-6"><sup>[return]</sup></a></li>
+<li id="fn:fn-7"><a href="http://man7.org/linux/man-pages/man7/epoll.7.html">http://man7.org/linux/man-pages/man7/epoll.7.html</a>
+ <a class="footnote-return" href="#fnref:fn-7"><sup>[return]</sup></a></li>
+<li id="fn:fn-8">I use read as an example here. Writing is similar.
+ <a class="footnote-return" href="#fnref:fn-8"><sup>[return]</sup></a></li>
+<li id="fn:fn-9">refers to the observation above
+ <a class="footnote-return" href="#fnref:fn-9"><sup>[return]</sup></a></li>
+<li id="fn:fn-10">maybe not true in some special case
+ <a class="footnote-return" href="#fnref:fn-10"><sup>[return]</sup></a></li>
+</ol>
+</div>
+
+
+        </div>
+    </div>
+</article>
+
+
+
+                <footer>
+                    
+
+
+
+
+
+<div class="right">
+    <div class="taxo no-text-decoration">
+         
+            
+                <ul class="no-bullets inline categories">
+                    
+                        
+                        
+                        
+                            
+                            
+                            
+                            
+                            
+                            <li class="__linux__"
+                                
+                                
+                                title="This is the only post categorized in ‘linux’"
+                                
+                            >
+                                <a class="p-category" href="https://fd3kyt.github.io/categories/linux/">linux</a>
+                            </li>
+                        
+                    
+                </ul>
+            
+         
+            
+        
+    </div>
+
+</div>
+<div class="clear-float"></div>
+
+
+
+<div class="prev-next-navigator clear-float">
+    
+    
+        <span class="next-post right no-text-decoration">
+            <a href="https://fd3kyt.github.io/posts/building-a-heap/" class="nobr">Building a heap »</a>
+        </span>
+    
+</div>
+
+
+
+
+
+
+
+
+
+
+
+                       
+
+
+
+<div id="disqus_thread"></div>
+<script>
+  (function() {
+  var d = document, s = d.createElement('script');
+  s.src = 'https://fd3kytblog.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+                    <ul class="no-bullets feed right inline">
+    
+</ul>
+<div class="clear-float"></div>
+
+                </footer>
+            </div>               
+
+            <footer> 
+                <hr />
+<ul class="social">
+    
+</ul>
+
+
+<p>
+    
+</p>
+
+
+
+
+
+<div class="badges">
+    
+    
+
+    
+</div>
+
+
+
+
+<script>var nav=responsiveNav("#nav");</script>
+
+
+
+<script defer src="https://fd3kyt.github.io/js/libs/fragmentions/wrapper.js"></script>
+
+
+
+
+
+
+
+
+
+
+            </footer>
+        </div> 
+    </body>
+</html>
